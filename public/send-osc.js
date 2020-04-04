@@ -2,6 +2,7 @@ var socket = io();
 
 $(function () {
   var timeOut;
+  // Make new system to interprate virtualJoystick
 
   $(":button").on("mousedown vmousedown",function () {
     var type = $(this).attr('class');
