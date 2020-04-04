@@ -1,4 +1,4 @@
-# Promul
+# Survial-of-the-dumbdest
 
 Template application fro sending OSC witha mobile phone
 
@@ -15,16 +15,10 @@ npm install
 node index.js
 ```
 
-Open a browser page and go to your device IP 
+Open a browser page and go to the displayed IP printed in the terminal
 
 ```batch
-localhost:8080
-```
-
-or (in example)
-
-```batch
-192.168.1.155:8080
+Connect to:  192.168.1.107:8080
 ```
 
 ## Contributing
