@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="/styles.css" />
+  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+  <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/jquery.kontrol.js"></script>
+  <title>Commute</title>
+</head>
+
+<body>
+  <fieldset class="ui-grid-a">
+    <div class="ui-block-a" data-role="button"><input type="button" class="button" id="L" value="LEFT" ></div>
+    <div class="ui-block-b" data-role="button"><input type="button" class="button" id="R" value="RIGHT"></div>
+  </fieldset>
+  </div>
+
+
+  <script src="/send-osc.js"></script>
+  <script>
+    $(document).ready(function () {
+      styles = { 'height': '100vh', 'font-size': '48px', 'line-height' : '100vh'};
+      $('.ui-btn').css(styles);
+    });
+  </script>
+</body>
+
+</html>
