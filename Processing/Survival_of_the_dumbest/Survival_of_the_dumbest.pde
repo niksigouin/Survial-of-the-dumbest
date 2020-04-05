@@ -51,11 +51,12 @@ void oscEvent(OscMessage m) {
     clientList.add(client);
 
     // ADDS NEW PLAYER TO THE SCENE
-    players.add(new Player(width/2, height * floorWallSplit, 65, 130, client));
+    players.add(new Player(width/2, height/2, 65, 130, client));
 
     //printArray(players);
     printArray(clientList);
   } 
+
   // #### Removes the diconnected client from clientList ### //
   else if (address.equals("/clientLeft")) {
 
@@ -73,6 +74,17 @@ void oscEvent(OscMessage m) {
     //printArray(players);
   } 
 
+  //if (address.equals("/button")) {
+
+  //  // LOGISTIQUE
+  //  client = m.get(0).stringValue(); // Grabs the client IP
+  //  String dir = m.get(1).stringValue();
+
+  //  int index = clientList.indexOf(client); // Gets the index of the client transmitting
+
+  //  players.get(index).move(dir); // Move player
+  //} 
+
   if (address.equals("/button")) {
 
     // LOGISTIQUE
@@ -84,13 +96,11 @@ void oscEvent(OscMessage m) {
     players.get(index).move(dir); // Move player
   } 
 
-  //String addr = m.addrPattern();
-  //String ad = m.get(0).stringValue();
-  //String toggle = m.get(1).stringValue();
+  String addr = m.addrPattern();
+  int first = m.get(0).intValue();
+  int second = m.get(1).intValue();
 
-  //println(addr, ad, toggle);
-  //println(ad);
-  //println(toggle);
+  println(addr, first, second);
 
   //println(m);
 }
