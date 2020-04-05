@@ -25,7 +25,7 @@ io.on('connection', function (socket) {
 
     // Gets random ID for connected user
     var user = Math.random().toString(36).substr(2, 9);
-    
+
 
     //Adds user ID to list and prints it
     userList.push(user);
@@ -34,7 +34,7 @@ io.on('connection', function (socket) {
 
     //Send the list of connected users to the OSC every second
     // client.send('/client', userList);
-    client.send('/clientJoin', user);
+    client.send("/connect", user);
 
     // Gets the input from the webpage and sends it through OSC
     socket.on('userInput', function (type, val) {
@@ -48,6 +48,7 @@ io.on('connection', function (socket) {
 
     // Gets every connected client and send a list
     socket.on('disconnect', function () {
+        client.send("/disconnect", user);
         //Removes disconnected users
         var index = userList.indexOf(user);
         if (index > -1) {
@@ -58,10 +59,12 @@ io.on('connection', function (socket) {
 
         //Send the list of connected IPS to the OSC
         // client.send('/client', userList);
-        client.send('/clientLeft', user);
+        
         console.log("Users:", userList);
     });
 });
+
+
 
 http.listen(httpPort, function () {
     console.log('Connect to: ', internalIp.v4.sync() + ":" + httpPort);

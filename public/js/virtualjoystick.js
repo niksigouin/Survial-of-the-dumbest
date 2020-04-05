@@ -105,8 +105,8 @@ VirtualJoystick.touchScreenAvailable	= function()
 //										//
 //////////////////////////////////////////////////////////////////////////////////
 
-VirtualJoystick.prototype.deltaX	= function(){ return this._stickX - this._baseX;	}
-VirtualJoystick.prototype.deltaY	= function(){ return this._stickY - this._baseY;	}
+VirtualJoystick.prototype.deltaX	= function(){ return parseFloat((this._stickX - this._baseX).toFixed(2));	}
+VirtualJoystick.prototype.deltaY	= function(){ return parseFloat((this._stickY - this._baseY).toFixed(2));	}
 
 VirtualJoystick.prototype.up	= function(){
 	if( this._pressed === false )	return false;

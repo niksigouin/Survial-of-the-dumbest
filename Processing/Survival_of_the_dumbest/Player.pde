@@ -42,8 +42,8 @@ class Player {
     playerX+=velocityX;
     playerY+=velocityY;
 
-    velocityX = map(_x, -50, 50, -5, 5);
-    velocityY = map(_y, -50, 50, -5, 5);
+    velocityX = map(_x, -50.0, 50.0, -5.0, 5.0);
+    velocityY = map(_y, -50.0, 50.0, -5.0, 5.0);
     
     playerX = constrain(playerX, playerWidth/2, width-playerWidth/2); 
     playerY = constrain(playerY, playerHeight, height);
