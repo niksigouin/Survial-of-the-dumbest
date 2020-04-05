@@ -35,15 +35,15 @@ class Player {
     popMatrix();
   }
 
-  void move(int _x, int _y) {
+  void move(float _x, float _y) {
     redraw();
     velocityX+=accelerationX;
     velocityY+=accelerationY;
     playerX+=velocityX;
     playerY+=velocityY;
 
-    velocityX = _x;
-    velocityY = _y;
+    velocityX = map(_x, -50, 50, -5, 5);
+    velocityY = map(_y, -50, 50, -5, 5);
     
     playerX = constrain(playerX, playerWidth/2, width-playerWidth/2); 
     playerY = constrain(playerY, playerHeight, height);
