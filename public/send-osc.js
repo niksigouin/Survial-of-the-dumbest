@@ -1,5 +1,6 @@
 var socket = io();
 var joyStickInterval;
+var intervalTime = 1 / 30 * 1000;
 
 console.log("touchscreen is", VirtualJoystick.touchScreenAvailable() ? "available" : "not available");
 
@@ -16,17 +17,17 @@ setInterval(function () {
   outputEl.innerHTML = '<b>Result:</b> '
     + ' dx:' + joystick.deltaX()
     + ' dy:' + joystick.deltaY();
-
-}, 1 / 30 * 1000); // 
+    // sendosc('joystick', [Math.floor(joystick.deltaX()), Math.floor(joystick.deltaY())]);
+}, intervalTime); // 
 
 
 // WHEN USER MOVES START SENDING THE POSITION
 joystick.addEventListener('touchStart', function () {
   // console.log('down');
-  
+
   joyStickInterval = setInterval(() => {
-    sendosc('joystick', [joystick.deltaX(), joystick.deltaY()])
-  }, 1 / 30 * 1000);
+    sendosc('joystick', [Math.floor(joystick.deltaX()), Math.floor(joystick.deltaY())]);
+  }, intervalTime);
 });
 
 // WHEN USER LETS GO OF THE JOYSTICK WAIT AND STOP SENDING THE POSITION
@@ -35,15 +36,15 @@ joystick.addEventListener('touchEnd', function () {
 
   setTimeout(() => {
     clearInterval(joyStickInterval);
-  }, 1 / 30 * 1000);
+  }, intervalTime);
 
 });
 
 // SENDS OSC TO SERVER
 // [TYPE: WHAT CONTROL, VAL: VALUE OF CONTROL]
 function sendosc(type, val) {
-  socket.emit(type, val );
-  console.log('joystick', [joystick.deltaX(), joystick.deltaY()]);
+  socket.emit('userInput', type, val);
+  console.log(type, val);
 }
 
 // OLD BUTTON THING

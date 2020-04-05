@@ -34,7 +34,7 @@ io.on('connection', function (socket) {
     client.send('/clientJoin', user)
 
     // Gets the input from the webpage and sends it through OSC
-    socket.on("userInput",function (type, val) {
+    socket.on('userInput', function (type, val) {
         // Prepares the Message to ship over OSC
         var msg = new Message('/' + type, user, val);
 
@@ -44,7 +44,7 @@ io.on('connection', function (socket) {
     });
 
     // Gets every connected client and send a list
-    socket.on("disconnect", function () {
+    socket.on('disconnect', function () {
         //Removes disconnected users
         var index = userList.indexOf(user);
         if (index > -1) {

@@ -35,29 +35,19 @@ class Player {
     popMatrix();
   }
 
-  void move(String _dir) {
+  void move(int _x, int _y) {
     redraw();
     velocityX+=accelerationX;
     velocityY+=accelerationY;
     playerX+=velocityX;
     playerY+=velocityY;
 
+    velocityX = _x;
+    velocityY = _y;
+    
     playerX = constrain(playerX, playerWidth/2, width-playerWidth/2); 
-    //playerY = constrain(playerY, floorWallSplit, floorWallSplit-playerHeight/2);
-
-    switch(_dir) {
-    case "L": // LEFT
-      velocityX = -4;
-      break;
-    case "U": // UP
-      //velocityY -= 4;
-      break;
-    case "R": // RIGHT
-      velocityX = 4;
-      break;
-    default:
-      velocityX = 0;
-      velocityY = 0;
-    }
+    playerY = constrain(playerY, playerHeight, height);
+    
+    
   }
 }
