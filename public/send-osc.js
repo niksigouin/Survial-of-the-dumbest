@@ -16,14 +16,14 @@ var joystick = new VirtualJoystick({
 });
 
 
-// PRINTS THE POSITION ON SCREEN
-setInterval(function () {
-  var outputEl = document.getElementById('result');
-  outputEl.innerHTML = '<b>Result:</b> '
-    + ' dx:' + joystick.deltaX()
-    + ' dy:' + joystick.deltaY();
-    // sendosc('joystick', [Math.floor(joystick.deltaX()), Math.floor(joystick.deltaY())]);
-}, intervalTime); // 
+// // PRINTS THE POSITION ON SCREEN
+// setInterval(function () {
+//   var outputEl = document.getElementById('result');
+//   outputEl.innerHTML = '<b>Result:</b> '
+//     + ' dx:' + joystick.deltaX()
+//     + ' dy:' + joystick.deltaY();
+//     // sendosc('joystick', [Math.floor(joystick.deltaX()), Math.floor(joystick.deltaY())]);
+// }, intervalTime); // 
 
 
 // WHEN USER MOVES START SENDING THE POSITION
@@ -31,7 +31,7 @@ joystick.addEventListener('touchStart', function () {
   // console.log('down');
 
   joyStickInterval = setInterval(() => {
-    sendosc('joystick', [Math.floor(joystick.deltaX()), Math.floor(joystick.deltaY())]);
+    sendosc('joystick', [Number(joystick.deltaX().toFixed(2)), Number(joystick.deltaY().toFixed(2))]);
   }, intervalTime);
 });
 
@@ -39,10 +39,12 @@ joystick.addEventListener('touchStart', function () {
 joystick.addEventListener('touchEnd', function () {
   // console.log('up')
 
-  setTimeout(() => {
-    clearInterval(joyStickInterval);
-  }, intervalTime);
+  // setTimeout(() => {
 
+  // }, intervalTime);
+  
+  sendosc('joystick', [Number(Math.abs(joystick.deltaX().toFixed(2))-Math.abs(joystick.deltaX()).toFixed(2)), Number(Math.abs(joystick.deltaY().toFixed(2))-Math.abs(joystick.deltaY()).toFixed(2))]);
+  clearInterval(joyStickInterval);
 });
 
 // SENDS OSC TO SERVER

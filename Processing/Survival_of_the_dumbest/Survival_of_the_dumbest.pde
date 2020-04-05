@@ -4,7 +4,7 @@ import netP5.*;
 import oscP5.*;
 
 OscP5 oscP5;
-NetAddress myRemoteLocation;
+NetAddress remote;
 
 ArrayList clientList = new ArrayList();
 ArrayList<Player> players = new ArrayList<Player>();
@@ -17,7 +17,11 @@ void setup() {
   size(1280, 720, P2D);
   smooth();
   oscP5 = new OscP5(this, 3334);
-  myRemoteLocation = new NetAddress("127.0.0.1", 3334);
+  remote = new NetAddress("127.0.0.1", 3334);
+  
+  //probServer();
+
+  
   debug = true;
 }
 
@@ -89,8 +93,8 @@ void oscEvent(OscMessage m) {
 
     // LOGISTIQUE
     client = m.get(0).stringValue(); // Grabs the client IP
-    int dirX = m.get(1).intValue();
-    int dirY = m.get(2).intValue();
+    float dirX = m.get(1).floatValue();
+    float dirY = m.get(2).floatValue();
 
     int index = clientList.indexOf(client); // Gets the index of the client transmitting
 
@@ -100,10 +104,17 @@ void oscEvent(OscMessage m) {
   String addr = m.addrPattern();
   //int first = m.get(0).intValue();
   //int second = m.get(1).intValue();
-  println(addr, m.get(0).stringValue(), m.get(1).intValue(), m.get(2).intValue());
+  println(addr, m.get(0).stringValue(), m.get(1).floatValue(), m.get(2).floatValue());
   //println(addr, first, second);
 
   //println(m);
+}
+
+void probServer() {
+  OscMessage ping = new OscMessage("/ping");
+  ping.add(true);
+  oscP5.send(ping,remote);
+  println("SERVER PROBED!");
 }
 
 void UI() {

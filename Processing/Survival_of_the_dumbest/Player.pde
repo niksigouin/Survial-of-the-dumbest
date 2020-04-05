@@ -35,7 +35,7 @@ class Player {
     popMatrix();
   }
 
-  void move(int _x, int _y) {
+  void move(float _x, float _y) {
     redraw();
     velocityX+=accelerationX;
     velocityY+=accelerationY;
