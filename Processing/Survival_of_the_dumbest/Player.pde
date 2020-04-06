@@ -50,9 +50,9 @@ class Player {
   }
 
   // PLAYER METHODS
-  //public String toString() {
-  //  return playerID;
-  //}
+  public String toString() {
+    return str(this.playerID);
+  }
 
   public int getID() {
     return this.playerID;
@@ -99,8 +99,8 @@ class Player {
   public void setSpeed(float _speed) {
     this.playerSpeed = _speed;
   }
-  
-  public void setDefaultSpeed(){
+
+  public void setDefaultSpeed() {
     this.playerSpeed = DEFAULT_SPEED;
   }
 }

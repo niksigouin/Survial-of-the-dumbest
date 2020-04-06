@@ -6,9 +6,9 @@ import oscP5.*;
 OscP5 oscP5;
 //NetAddress remote;
 
-ArrayList clientList = new ArrayList();
+// ARRAY OF CONNECT PLAYERS
 ArrayList<Player> players = new ArrayList<Player>();
-
+Iterator<Player> connectedPlayers = players.iterator();
 
 String client;
 boolean debug = false; // SHOW DEBUG UI
@@ -24,6 +24,7 @@ void setup() {
   // TRANSFERS THE "/client" MESSAGES TO clientList MATHOD FOR PROCESSING
   oscP5.plug(this, "connectClient", "/connect");
   oscP5.plug(this, "disconnectClient", "/disconnect");
+  oscP5.plug(this, "movePlayer", "/joystick");
 
   debug = true;
 }
@@ -42,31 +43,35 @@ void draw() {
 }
 
 // ADDS CONNECTED USER
-void connectClient(String _client) {
+void connectClient(int _id) {
   // LOGISTIQUE
-  println("Joined: " + _client);
-  clientList.add(_client);
+  println("Joined:", _id);
 
-  // ADDS NEW PLAYER TO THE SCENE
-  players.add(new Player(width/2, height/2, 65, 130, _client));
+  // ADDS NEW PLAYER TO THE ARRAY
+  players.add(new Player(width/2, height/2, 65, 130, _id));
 
-  //printArray(players);
-  printArray(clientList);
+  printArray(players);
 } 
 
 // REMOVES DISCONNECTED USER
-void disconnectClient(String _client) {
-  // LOGISTIQUE
-  int index = clientList.indexOf(_client); // Gets the index of the disconnected client
-  //players.remove(index); // Removes the player with the index of the disconnected client
-  //clientList.remove(index); // Removes the client from the connected client list
+void disconnectClient(int _id) {
+  // LOGISTIQUE  
+  println("Left:", playerIndex(_id));
   
-
-  // DEBUG PRINTSSSSSSSS
-  println("Left: " + _client);
-  printArray(clientList);
-  //printArray(players);
+  // REMOVES PLAYER FROM ARRAY
+  players.remove(playerIndex(_id));
+  
+  printArray(players);
 }
+
+
+//void movePlayer(String _id, float _x, float _y){
+
+//    int index = clientList.indexOf(client); // Gets the index of the client transmitting
+
+//    players.get(index).move(dirX, dirY); // Move player
+//}
+
 
 void oscEvent(OscMessage oscMessage) {
   String address = oscMessage.addrPattern();
@@ -95,7 +100,7 @@ void oscEvent(OscMessage oscMessage) {
   ////println(addr, m.get(0).stringValue(), m.get(1).floatValue(), m.get(2).floatValue());
   ////////println(addr, first, second);
 
-  println(oscMessage.typetag());
+  //println(oscMessage.typetag());
 }
 
 //void mousePressed() {
@@ -108,18 +113,23 @@ void oscEvent(OscMessage oscMessage) {
 //  oscP5.send(myMessage, remote); 
 //}
 
-//void probServer() {
-//  OscMessage ping = new OscMessage("/ping");
-//  ping.add(true);
-//  oscP5.send(ping,remote);
-//  println("SERVER PROBED!");
-//}
-
 void UI() {
   fill(255);
   textAlign(LEFT, BOTTOM);
   textSize(20);
-  text("Clients: " + clientList, 5, height-5);
+  text("Clients: " + players, 5, height-5);
   textAlign(LEFT, TOP);
   text((int) frameRate, 0, 0);
+}
+
+
+// LOOPS THROUGH THE CONNECT CLIENT LIST AND RETURNS INDEX OF USER BASEDON ITS USERID
+int playerIndex(int _id) {
+  int playerIndex = -1;
+  for (int i=0; i < players.size(); i++) {
+    if (players.get(i).getID() == _id) {
+      playerIndex = i;
+    }
+  }
+  return playerIndex;
 }

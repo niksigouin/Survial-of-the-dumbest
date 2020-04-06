@@ -48,8 +48,10 @@ io.on('connection', function (socket) {
 
     // Gets every connected client and send a list
     socket.on('disconnect', function () {
+        //  Sends OSC packet conataining the disconnected user ID
         client.send("/disconnect", user);
-        //Removes disconnected users
+
+        // Removes disconnected users from list
         var index = userList.indexOf(user);
         if (index > -1) {
             userList.splice(index, 1);
@@ -57,8 +59,7 @@ io.on('connection', function (socket) {
 
         console.log(user + ' disconnected');
 
-        //Send the list of connected IPS to the OSC
-        // client.send('/client', userList);
+        
         
         console.log("Users:", userList);
     });
