@@ -4,7 +4,7 @@ class Player {
   private float playerWidth, playerHeight; // Player size vars.
   private float velocityX, velocityY; // Velocity vars.
   private float accelerationX, accelerationY; // Acceleration vars.
-  private final float DEFAULT_SPEED = 5.0;
+  private final float DEFAULT_SPEED = 1.0;
   private float playerSpeed = DEFAULT_SPEED;
   private color playerColor = color( random(0, 360), 100, random(75, 100)); // GENERATES RANDOM COLOR FOR USER
 

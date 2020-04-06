@@ -27,7 +27,7 @@ joystick.addEventListener('touchStart', function () {
 // WHEN USER LETS GO OF THE JOYSTICK WAIT AND STOP SENDING THE POSITION
 joystick.addEventListener('touchEnd', function () {
   // sendosc('joystick', [Number(Math.abs(joystick.deltaX().toFixed(2))-Math.abs(joystick.deltaX()).toFixed(2)), Number(Math.abs(joystick.deltaY().toFixed(2))-Math.abs(joystick.deltaY()).toFixed(2))]);
-  sendosc('joystick', [parseFloat(0.00.toFixed(2)), parseFloat(0.00.toFixed(2))]);
+  sendosc('joystick', ["0.00", "0.00"]);
 
   clearInterval(joyStickInterval);
 });

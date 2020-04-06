@@ -70,8 +70,8 @@ void disconnectClient(int _id) {
 }
 
 
-void movePlayer(int _id, float _x, float _y) {
-  players.get(playerIndex(_id)).move(_x, _y); // Move player
+void movePlayer(int _id, String _x, String _y) {
+  players.get(playerIndex(_id)).move(Float.parseFloat(_x), Float.parseFloat(_y)); // Move player
 }
 
 // WHEN HTTP  SERVER CONNECTS, CLEAR CLIENT ARRAYLIST
