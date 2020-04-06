@@ -24,7 +24,7 @@ io.on('connection', function (socket) {
     const client = new Client(clientIp, tcpPort);
 
     // Gets random ID for connected user
-    var user = Math.random().toString(36).substr(2, 9);
+    var user = Math.floor(Math.random() * 90000) + 10000;
 
 
     //Adds user ID to list and prints it
