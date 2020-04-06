@@ -1,6 +1,6 @@
 var socket = io();
 var joyStickInterval;
-var intervalTime = 1 / 60 * 1000;
+var intervalTime = 1;
 
 console.log("touchscreen is", VirtualJoystick.touchScreenAvailable() ? "available" : "not available");
 

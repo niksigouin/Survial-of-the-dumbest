@@ -58,15 +58,10 @@ io.on('connection', function (socket) {
         }
 
         console.log(user + ' disconnected');
-
-        
-        
         console.log("Users:", userList);
     });
 });
 
-
-
 http.listen(httpPort, function () {
-    console.log('Connect to: ', internalIp.v4.sync() + ":" + httpPort);
+    console.log('Connect to:', internalIp.v4.sync() + ":" + httpPort);
 });
