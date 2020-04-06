@@ -25,8 +25,12 @@ void setup() {
   oscP5.plug(this, "connectClient", "/connect");
   oscP5.plug(this, "disconnectClient", "/disconnect");
   oscP5.plug(this, "movePlayer", "/joystick");
+  oscP5.plug(this, "rebaseClientArray", "/start");
 
   debug = true;
+
+  // SENDS A MESSAGE TO THE NODE.JS SERVER TO GRAB CONNECTED CLIENTS
+  sendSketchState();
 }
 
 void draw() {
@@ -34,7 +38,7 @@ void draw() {
 
   // Draws the UI
   if (debug) {
-    UI();
+    debugUI();
   }
 
   for (int i=0; i < players.size(); i++) {
@@ -44,14 +48,15 @@ void draw() {
 
 // ADDS CONNECTED USER
 void connectClient(int _id) {
-  // LOGISTIQUE
+  // ADDS NEW PLAYER TO THE ARRAY IF NOT ALREADY IN
+  if (players.contains(playerIndex(_id))) {
+    println("User", _id, "already connected!");
+  } else {
+    players.add(new Player(width/2, height/2, 65, 130, _id));
 
-
-  // ADDS NEW PLAYER TO THE ARRAY
-  players.add(new Player(width/2, height/2, 65, 130, _id));
-
-  println("Joined:", _id);
-  printArray(players);
+    println("Joined:", _id);
+    printArray(players);
+  }
 } 
 
 // REMOVES DISCONNECTED USER
@@ -69,6 +74,12 @@ void movePlayer(int _id, float _x, float _y) {
   players.get(playerIndex(_id)).move(_x, _y); // Move player
 }
 
+// WHEN HTTP  SERVER CONNECTS, CLEAR CLIENT ARRAYLIST
+// THIS INSURES THAT ALL CLIENTS MATCH
+void rebaseClientArray(String _state) {
+  println("Clearing players ArrayList!", players);
+  players.clear();
+}
 
 void oscEvent(OscMessage oscMessage) {
   String address = oscMessage.addrPattern();
@@ -100,17 +111,16 @@ void oscEvent(OscMessage oscMessage) {
   //println(oscMessage.typetag());
 }
 
-void mousePressed() {
-  /* in the following different ways of creating osc messages are shown by example */
-  OscMessage myMessage = new OscMessage("/test");
-
-  myMessage.add(123); /* add an int to the osc message */
-
+void sendSketchState() {
+  OscMessage myMessage = new OscMessage("/sketch");
+  //myMessage.add(""); /* add an String to the osc message */
   /* send the message */
-  oscP5.send(myMessage, remote); 
+  oscP5.send(myMessage, remote);
 }
 
-void UI() {
+
+// DEBUG UI
+void debugUI() {
   fill(255);
   textAlign(LEFT, BOTTOM);
   textSize(20);
@@ -118,7 +128,6 @@ void UI() {
   textAlign(LEFT, TOP);
   text((int) frameRate, 0, 0);
 }
-
 
 // LOOPS THROUGH THE CONNECT CLIENT LIST AND RETURNS INDEX OF USER BASEDON ITS USERID
 int playerIndex(int _id) {

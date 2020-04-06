@@ -1,39 +1,44 @@
-// var app = require('express')();
 var express = require('express');
 var app = express();
 var http = require('http').createServer(app);
-var io = require('socket.io')(http);
+const io = require('socket.io')(http);
+const dgram = require('dgram');
+const server = dgram.createSocket('udp4');
 const internalIp = require('internal-ip');
 const { Client, Message } = require('node-osc');
 
-const httpPort = 8080;
-const tcpPort = 3334;
+const HTTP_PORT = 8080;
+const EMIT_PORT = 3334;
+const RECEIVE_PORT = 3335;
 
-var clientIp;
+const CLIENT_IP = "127.0.0.1";
 
 //Creates empty list of connected users
-userList = [];
+clientList = [];
 
 app.use(express.static(__dirname + '/public'));
 
-
-
 io.on('connection', function (socket) {
-    // starts new OSC client on local computer
-    clientIp = "127.0.0.1";
-    const client = new Client(clientIp, tcpPort);
+    // // starts new OSC client on local computer
+    const client = new Client(CLIENT_IP, EMIT_PORT);
+
+    // Send connected clients when message received
+    server.on('message', (msg, rinfo) => {
+        console.log("Sketch is running -> Sending connected users");
+        for (let clients = 0; clients < clientList.length; clients++) {
+            client.send("/connect", clientList[clients]);
+        }
+    });
 
     // Gets random ID for connected user
     var user = Math.floor(Math.random() * 90000) + 10000;
 
-
     //Adds user ID to list and prints it
-    userList.push(user);
+    clientList.push(user);
     console.log(user + " connected");
-    console.log("Users:", userList);
+    console.log("Users:", clientList);
 
     //Send the list of connected users to the OSC every second
-    // client.send('/client', userList);
     client.send("/connect", user);
 
     // Gets the input from the webpage and sends it through OSC
@@ -52,16 +57,22 @@ io.on('connection', function (socket) {
         client.send("/disconnect", user);
 
         // Removes disconnected users from list
-        var index = userList.indexOf(user);
+        var index = clientList.indexOf(user);
         if (index > -1) {
-            userList.splice(index, 1);
+            clientList.splice(index, 1);
         }
 
-        console.log(user + ' disconnected');
-        console.log("Users:", userList);
+        console.log(user, "disconnected");
+        console.log("Users:", clientList);
     });
 });
 
-http.listen(httpPort, function () {
-    console.log('Connect to:', internalIp.v4.sync() + ":" + httpPort);
+// Listen on the port [HTTPPORT] for http requests
+http.listen(HTTP_PORT, function () {
+    client = new Client(CLIENT_IP, EMIT_PORT);
+    client.send("/start", " ");
+    console.log('Connect to:', internalIp.v4.sync() + ":" + HTTP_PORT);
 });
+
+// Binds the port to the UDP server
+server.bind(RECEIVE_PORT);
