@@ -35,7 +35,7 @@ io.on('connection', function (socket) {
 
     //Adds user ID to list and prints it
     clientList.push(user);
-    console.log(user + " connected");
+    console.log(user, "connected");
     console.log("Users:", clientList);
 
     //Send the list of connected users to the OSC every second

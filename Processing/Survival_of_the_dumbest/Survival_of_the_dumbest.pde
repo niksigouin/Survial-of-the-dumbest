@@ -22,10 +22,11 @@ void setup() {
   //probServer();
 
   // TRANSFERS THE "/client" MESSAGES TO clientList MATHOD FOR PROCESSING
+  oscP5.plug(this, "rebaseClientArray", "/start");
   oscP5.plug(this, "connectClient", "/connect");
   oscP5.plug(this, "disconnectClient", "/disconnect");
   oscP5.plug(this, "movePlayer", "/joystick");
-  oscP5.plug(this, "rebaseClientArray", "/start");
+  
 
   debug = true;
 
