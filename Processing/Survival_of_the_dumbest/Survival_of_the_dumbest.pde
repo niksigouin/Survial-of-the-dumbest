@@ -39,10 +39,13 @@ void draw() {
   if (debug) {
     debugUI();
   }
-
-  for (int i=0; i < players.size(); i++) {
-    players.get(i).display();
+  
+  // DISPLAYS ALL CONNECTED PLAYERS ON SCREEN
+  for(Player player : players){
+     player.display();
   }
+  
+ 
 }
 
 // ADDS CONNECTED USER
