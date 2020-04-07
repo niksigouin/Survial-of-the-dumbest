@@ -19,8 +19,6 @@ void setup() {
   oscP5 = new OscP5(this, 3334);
   remote = new NetAddress("127.0.0.1", 3335);
 
-  //probServer();
-
   // TRANSFERS THE "/client" MESSAGES TO clientList MATHOD FOR PROCESSING
   oscP5.plug(this, "rebaseClientArray", "/start");
   oscP5.plug(this, "connectClient", "/connect");
@@ -63,7 +61,7 @@ void connectClient(int _id) {
 // REMOVES DISCONNECTED USER
 void disconnectClient(int _id) { 
   // REMOVES PLAYER FROM ARRAY
-  if (players.size() >= 0) {
+  if (players.size() >= 0 && players.contains(playerIndex(_id)) == false) {
     players.remove(playerIndex(_id));
     println("Left:", _id);
     printArray(players);
@@ -78,7 +76,7 @@ void movePlayer(int _id, String _x, String _y) {
 // WHEN HTTP  SERVER CONNECTS, CLEAR CLIENT ARRAYLIST
 // THIS INSURES THAT ALL CLIENTS MATCH
 void rebaseClientArray(String _state) {
-  println("Clearing players ArrayList!", players);
+  println("Node.js server restarted -> Clearing players ArrayList!");
   players.clear();
 }
 

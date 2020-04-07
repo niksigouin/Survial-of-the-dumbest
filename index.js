@@ -22,14 +22,6 @@ io.on('connection', function (socket) {
     // // starts new OSC client on local computer
     const client = new Client(CLIENT_IP, EMIT_PORT);
 
-    // Send connected clients when message received
-    server.on('message', (msg, rinfo) => {
-        console.log("Sketch is running -> Sending connected users");
-        for (let clients = 0; clients < clientList.length; clients++) {
-            client.send("/connect", clientList[clients]);
-        }
-    });
-
     // Gets random ID for connected user
     var user = Math.floor(Math.random() * 90000) + 10000;
 
@@ -67,6 +59,16 @@ io.on('connection', function (socket) {
     });
 });
 
+// Send connected clients when message received
+server.on('message', (msg, rinfo) => {
+    console.log("Sketch is running -> Sending connected users");
+    // console.log(msg, rinfo);
+    for (let clients = 0; clients < clientList.length; clients++) {
+        client.send("/connect", clientList[clients]);
+    }
+    // client.send("/connect", clientList);
+});
+
 // Listen on the port [HTTPPORT] for http requests
 http.listen(HTTP_PORT, function () {
     client = new Client(CLIENT_IP, EMIT_PORT);
@@ -76,3 +78,4 @@ http.listen(HTTP_PORT, function () {
 
 // Binds the port to the UDP server
 server.bind(RECEIVE_PORT);
+
