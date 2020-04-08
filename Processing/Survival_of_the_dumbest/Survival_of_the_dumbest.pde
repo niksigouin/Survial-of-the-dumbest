@@ -49,14 +49,14 @@ void draw() {
 
 // ADDS CONNECTED USER
 void connectClient(int _id) {
-  // ADDS NEW PLAYER TO THE ARRAY IF NOT ALREADY IN
+  //// ADDS NEW PLAYER TO THE ARRAY IF NOT ALREADY IN
   if (players.contains(playerIndex(_id))) {
     println("User", _id, "already connected!");
   } else {
     players.add(new Player(width/2, height/2, 65, _id));
     println("Joined:", _id);
     printArray(players);
-  }
+  }  
 } 
 
 // REMOVES DISCONNECTED USER
@@ -112,7 +112,7 @@ void oscEvent(OscMessage oscMessage) {
   ////println(addr, m.get(0).stringValue(), m.get(1).floatValue(), m.get(2).floatValue());
   ////////println(addr, first, second);
 
-  //println(oscMessage.typetag());
+  println("Type: " + oscMessage.typetag(), "Message: " + oscMessage);
 }
 
 void sendSketchState() {
