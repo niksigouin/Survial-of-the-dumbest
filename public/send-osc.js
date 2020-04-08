@@ -12,7 +12,7 @@ var joystick = new VirtualJoystick({
   baseX: 200,
   baseY: 200,
   limitStickTravel: true,
-  stickRadius: 50.0
+  stickRadius: 50
 });
 
 // WHEN USER MOVES START SENDING THE POSITION
@@ -20,7 +20,7 @@ joystick.addEventListener('touchStart', function () {
   // console.log('down');
 
   joyStickInterval = setInterval(() => {
-    sendosc('joystick', [joystick.deltaX(),joystick.deltaY()]);
+    sendosc('joystick', [(joystick.deltaX()/50).toFixed(2),(joystick.deltaY()/50).toFixed(2)]);
   }, intervalTime);
 });
 
