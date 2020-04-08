@@ -7,7 +7,8 @@ OscP5 oscP5;
 NetAddress remote;
 
 // ARRAY OF CONNECT PLAYERS
-ArrayList<Player> players = new ArrayList<Player>();
+//ArrayList<Player> players = new ArrayList<Player>();
+HashMap<Integer, Player> players = new HashMap<Integer, Player>();
 
 String client;
 boolean debug = false; // SHOW DEBUG UI
@@ -42,33 +43,36 @@ void draw() {
   }
 
   // DISPLAYS ALL CONNECTED PLAYERS ON SCREEN
-  for (Player player : players) {
-    player.display();
-  }
+  //for (Player player : players) {
+  //  player.display();
+  //}
 }
 
 // ADDS CONNECTED USER
 void connectClient(int _id) {
+  Integer _UID = new Integer(_id);
   // ADDS NEW PLAYER TO THE ARRAY IF NOT ALREADY IN
-  if (players.contains(playerIndex(_id))) {
-    println("User", _id, "already connected!");
-  } else {
-    players.add(new Player(width/2, height/2, 65, _id));
-    println("Joined:", _id);
-    printArray(players);
-  }
+  //if (players.contains(playerIndex(_id))) {
+  //  println("User", _id, "already connected!");
+  //} else {
+  //  players.add(new Player(width/2, height/2, 65, _id));
+  //  println("Joined:", _id);
+  //  printArray(players);
+  //}
+  players.put(_UID, new Player(width/2, height/2, 65, _id));
 } 
 
 // REMOVES DISCONNECTED USER
 void disconnectClient(int _id) { 
+  Integer _UID = new Integer(_id);
   // REMOVES PLAYER FROM ARRAY
-  if (players.size() > 0 && players.contains(playerIndex(_id)) == false) {
-    players.remove(playerIndex(_id));
-    println("Left:", _id);
-    printArray(players);
-  } else {
-    println("User", players.get(playerIndex(_id)), "tried to leave!");
-  }
+  //if (players.size() > 0 && players.contains(playerIndex(_id)) == false) {
+  //  players.remove(playerIndex(_id));
+  //  println("Left:", _id);
+  //  printArray(players);
+  //} else {
+  //  println("User", players.get(playerIndex(_id)), "tried to leave!");
+  //}
 }
 
 
