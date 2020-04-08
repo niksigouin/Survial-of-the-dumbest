@@ -22,45 +22,31 @@ var client = new Client(CLIENT_IP, EMIT_PORT);
 app.use(express.static(__dirname + '/public'));
 
 io.on('connection', function (socket) {
-    
-
     // Gets random ID for connected user
     var user = Math.floor(Math.random() * 90000) + 10000;
 
-
-    //Adds user ID to list and prints it
-    clientList.push(user);
-    console.log(user, "connected");
-    console.log("Users:", clientList);
-
-    //Send the list of connected users to the OSC every second
+    //Send the connected user
     client.send("/connect", user);
 
+    //Adds user ID to list and prints it
+    console.log(user, "connected");
+    clientList.push(user);
+    console.log("Users:", clientList);
 
     // Gets the input from the webpage and sends it through OSC
     socket.on('userInput', function (type, val) {
-        // Prepares the Message to ship over OSC
-        // var msg = new Message('/' + type, user, val);
-
         // Ships the Message over OSC
         client.send("/" + type, user, val);
-        // console.log(msg);
-        // client.close();
     });
 
-    // Gets every connected client and send a list
+    // Disconnects player when the leave the web page
     socket.on('disconnect', function () {
-
-        //  Sends OSC packet conataining the disconnected user ID
+        //  Sends OSC packet containing the disconnected user ID
         client.send("/disconnect", user);
 
-        // Removes disconnected users from list
-        var index = clientList.indexOf(user);
-        if (index > -1) {
-            clientList.splice(index, 1);
-        }
-
+        // Removes disconnected user from list
         console.log(user, "disconnected");
+        clientList.pop(user);
         console.log("Users:", clientList);
     });
 });
@@ -76,13 +62,10 @@ server.on('message', (msg) => {
     }
 });
 
-// Listen on the port [HTTPPORT] for http requests
+// Listen on the port [HTTPPORT] for requests
 http.listen(HTTP_PORT, function () {
-    // client = new Client(CLIENT_IP, EMIT_PORT);
+    // Sends a message to the processing sketch when server start
     client.send("/start", "READY");
     console.log('Connect to:', internalIp.v4.sync() + ":" + HTTP_PORT);
 });
-
-// // Binds the port to the UDP server
-// server.bind(RECEIVE_PORT);
 
