@@ -1,7 +1,8 @@
 class Player {
   private int playerID; // Player Identifier variable
   private float playerX, playerY; // Player position vars
-  private float playerWidth, playerHeight; // Player size vars.
+  //private float playerWidth, playerHeight; // Player size vars.
+  private float playerSize; // Player size vars.
   private float velocityX, velocityY; // Velocity vars.
   private float accelerationX, accelerationY; // Acceleration vars.
   private final float DEFAULT_SPEED = 1.0;
@@ -9,11 +10,12 @@ class Player {
   private color playerColor = color( random(0, 360), 100, random(75, 100)); // GENERATES RANDOM COLOR FOR USER
 
 
-  Player(float _x, float _y, float _w, float _h, int _id) {
+  Player(float _x, float _y, float _size, int _id) {
     this.playerX = _x;
     this.playerY = _y;
-    this.playerWidth = _w;
-    this.playerHeight = _h;
+    this.playerSize = _size;
+    //this.playerWidth = _w;
+    //this.playerHeight = _h;
     this.playerID = _id;
   }
 
@@ -21,17 +23,19 @@ class Player {
   // Change player to new game
   void display() {
     colorMode(HSB, 360, 100, 100);
-    rectMode(CENTER);
+    //rectMode(CENTER);
     pushMatrix();
-    translate(this.playerX, this.playerY-this.playerHeight/2);
+    translate(this.playerX, this.playerY);
     fill(this.playerColor);
-    stroke(3);
-    strokeWeight(3);
-    rect(0, 0, this.playerWidth, this.playerHeight, 20);
+    stroke(0);
+    strokeWeight(this.playerSize * 0.05);
+    circle(0,0, this.playerSize);
+    
+    
+    // DISPLAY USER ID
     fill(0);
     textAlign(CENTER, BOTTOM);
-    // DISPLAY USER ID
-    text(str(this.playerID), 0, -this.playerHeight/2);
+    text(str(this.playerID), 0, -this.playerSize/2);
     popMatrix();
   }
 
@@ -45,8 +49,8 @@ class Player {
     this.velocityX = map(_x, -50.0, 50.0, -this.playerSpeed, this.playerSpeed);
     this.velocityY = map(_y, -50.0, 50.0, -this.playerSpeed, this.playerSpeed);
 
-    this.playerX = constrain(this.playerX, this.playerWidth/2, width-this.playerWidth/2); 
-    this.playerY = constrain(this.playerY, this.playerHeight, height);
+    this.playerX = constrain(this.playerX, this.playerSize, width-this.playerSize); 
+    this.playerY = constrain(this.playerY, this.playerSize, height);
   }
 
   // PLAYER METHODS
@@ -54,7 +58,7 @@ class Player {
     return str(this.playerID);
   }
 
-  public int getID() {
+  public int getUID() {
     return this.playerID;
   }
 
