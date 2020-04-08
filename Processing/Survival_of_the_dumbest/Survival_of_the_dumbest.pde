@@ -7,7 +7,7 @@ OscP5 oscP5;
 NetAddress remote;
 
 // ARRAY OF CONNECT PLAYERS
-ArrayList<Player> players = new ArrayList<Player>();
+HashMap<Integer, Player> players = new HashMap<Integer, Player>();
 
 String client;
 boolean debug = false; // SHOW DEBUG UI
@@ -42,38 +42,42 @@ void draw() {
   }
 
   // DISPLAYS ALL CONNECTED PLAYERS ON SCREEN
-  for (Player player : players) {
+  for (Player player : players.values()) {
     player.display();
   }
 }
 
 // ADDS CONNECTED USER
 void connectClient(int _id) {
-  // ADDS NEW PLAYER TO THE ARRAY IF NOT ALREADY IN
-  if (players.contains(playerIndex(_id))) {
-    println("User", _id, "already connected!");
-  } else {
-    players.add(new Player(width/2, height/2, 65, _id));
-    println("Joined:", _id);
-    printArray(players);
-  }
+  Integer _UID = new Integer(_id); // CONVERTS INT TO PRIMITIVE INTERGER
+
+  println("Joined:", _UID);
+  players.putIfAbsent(_UID, new Player(width/2, height/2, 65, _id));
+  printArray(players);
 } 
 
 // REMOVES DISCONNECTED USER
 void disconnectClient(int _id) { 
-  // REMOVES PLAYER FROM ARRAY
-  if (players.size() > 0 && players.contains(playerIndex(_id)) == false) {
-    players.remove(playerIndex(_id));
-    println("Left:", _id);
-    printArray(players);
-  } else {
-    println("User", players.get(playerIndex(_id)), "tried to leave!");
+  Integer _UID = new Integer(_id); // CONVERTS INT TO PRIMITIVE INTERGER
+  Iterator<Integer> iterator = players.keySet().iterator(); // ITERATOR FOR PLAYER KEYS
+
+  // ITERATES THROUGH THE UIDs
+  while (iterator.hasNext()) {
+    Integer player = iterator.next();
+
+    // IF THE UID EQUALS THE CURENT ITERATION, REMOVE IT AND PRINT TO CONSOLE
+    if (player.equals(_UID)) {
+      iterator.remove();
+      println("Left:", _UID);
+      printArray(players);
+    }
   }
 }
 
 
 void movePlayer(int _id, String _x, String _y) {
-  players.get(playerIndex(_id)).move(Float.parseFloat(_x), Float.parseFloat(_y)); // Move player
+  Integer _UID = new Integer(_id); // CONVERTS INT TO PRIMITIVE INTERGER
+  players.get(_UID).move(Float.parseFloat(_x), Float.parseFloat(_y)); // GETS THE KEY OF THE PLAYER ANV MOVE
 }
 
 // WHEN HTTP  SERVER CONNECTS, CLEAR CLIENT ARRAYLIST
@@ -86,42 +90,15 @@ void rebaseClientArray(String _state) {
 }
 
 void oscEvent(OscMessage oscMessage) {
-  //String address = oscMessage.addrPattern();
-  //// Gets the first value of the osc message (Use of idex is for an array of values
-  //// EX: 
-  //// OSC MESSAGE OBJECT -> {IP ADDRESS}/XYPAD [12, 19]
-  //// int x = theOscMessage.get(0).intValue();
-  //// int y = theOscMessage.get(1).intValue();
-
-  // // MOVES THE PLAYER 
-  //if (address.equals("/joystick")) {
-
-  //  // LOGISTIQUE
-  //  client = m.get(0).stringValue(); // Grabs the client IP
-  //  float dirX = m.get(1).floatValue();
-  //  float dirY = m.get(2).floatValue();
-
-  //  int index = clientList.indexOf(client); // Gets the index of the client transmitting
-
-  //  players.get(index).move(dirX, dirY); // Move player
-  //} 
-
-  //String addr = m.addrPattern();
-  ////////int first = m.get(0).intValue();
-  ////////int second = m.get(1).intValue();
-  ////println(addr, m.get(0).stringValue(), m.get(1).floatValue(), m.get(2).floatValue());
-  ////////println(addr, first, second);
-
-  //println(oscMessage.typetag());
+  //println("Type: " + oscMessage.typetag(), "Message: " + oscMessage);
 }
 
 void sendSketchState() {
   OscMessage myMessage = new OscMessage("/sketch");
-  //myMessage.add(""); /* add an String to the osc message */
-  /* send the message */
+  
+  // SENDS THE MESSAGE TO THE NODE.JS SERVER
   oscP5.send(myMessage, remote);
 }
-
 
 // DEBUG UI
 void debugUI() {
@@ -131,15 +108,4 @@ void debugUI() {
   text("Clients: " + players, 5, height-5);
   textAlign(LEFT, TOP);
   text((int) frameRate, 0, 0);
-}
-
-// LOOPS THROUGH THE CONNECT CLIENT LIST AND RETURNS INDEX OF USER BASEDON ITS USERID
-int playerIndex(int _id) {
-  int playerIndex = -1;
-  for (int i=0; i < players.size(); i++) {
-    if (players.get(i).getUID() == _id) {
-      playerIndex = i;
-    }
-  }
-  return playerIndex;
 }
