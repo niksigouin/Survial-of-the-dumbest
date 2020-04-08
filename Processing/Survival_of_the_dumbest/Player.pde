@@ -1,5 +1,5 @@
 class Player {
-  private int playerID; // Player Identifier variable
+  private Integer playerID; // Player Identifier variable
   private float playerX, playerY; // Player position vars
   //private float playerWidth, playerHeight; // Player size vars.
   private float playerSize; // Player size vars.
@@ -58,7 +58,7 @@ class Player {
     return str(this.playerID);
   }
 
-  public int getUID() {
+  public Integer getUID() {
     return this.playerID;
   }
 
