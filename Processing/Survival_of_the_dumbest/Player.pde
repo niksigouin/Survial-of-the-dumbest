@@ -1,22 +1,24 @@
 class Player {
-  private int playerID; // Player Identifier variable
-  private float playerX, playerY; // Player position vars
+  private PVector location;
+  private int UID; // Player Identifier variable
+  private float x, y; // Player position vars
   //private float playerWidth, playerHeight; // Player size vars.
-  private float playerSize; // Player size vars.
+  private float size; // Player size vars.
   private float velocityX, velocityY; // Velocity vars.
   private float accelerationX, accelerationY; // Acceleration vars.
   private final float DEFAULT_SPEED = 1.0;
-  private float playerSpeed = DEFAULT_SPEED;
-  private color playerColor = color( random(0, 360), 100, random(75, 100)); // GENERATES RANDOM COLOR FOR USER
+  private float speed = DEFAULT_SPEED;
+  private color pColor = color( random(0, 360), 100, random(75, 100)); // GENERATES RANDOM COLOR FOR USER
 
 
   Player(float _x, float _y, float _size, int _id) {
-    this.playerX = _x;
-    this.playerY = _y;
-    this.playerSize = _size;
+    this.location = new PVector(_x, _y);
+    //this.playerX = _x;
+    //this.playerY = _y;
+    this.size = _size;
     //this.playerWidth = _w;
     //this.playerHeight = _h;
-    this.playerID = _id;
+    this.UID = _id;
   }
 
   // DISPLAYS PLAYER
@@ -25,17 +27,17 @@ class Player {
     colorMode(HSB, 360, 100, 100);
     //rectMode(CENTER);
     pushMatrix();
-    translate(this.playerX, this.playerY);
-    fill(this.playerColor);
+    translate(this.location.x, this.location.y);
+    fill(this.pColor);
     stroke(0);
-    strokeWeight(this.playerSize * 0.05);
-    circle(0,0, this.playerSize);
+    strokeWeight(this.size * 0.05);
+    circle(0,0, this.size);
     
     
     // DISPLAY USER ID
     fill(0);
     textAlign(CENTER, BOTTOM);
-    text(str(this.playerID), 0, -this.playerSize/2);
+    text(str(this.UID), 0, -this.size/2);
     popMatrix();
   }
 
@@ -43,68 +45,69 @@ class Player {
     redraw();
     this.velocityX += this.accelerationX;
     this.velocityY += this.accelerationY;
-    this.playerX += this.velocityX;
-    this.playerY += this.velocityY;
+    this.x += this.velocityX;
+    this.y += this.velocityY;
 
-    this.velocityX = map(_x, -50.0, 50.0, -this.playerSpeed, this.playerSpeed);
-    this.velocityY = map(_y, -50.0, 50.0, -this.playerSpeed, this.playerSpeed);
+    this.velocityX = map(_x, -50.0, 50.0, -this.speed, this.speed);
+    this.velocityY = map(_y, -50.0, 50.0, -this.speed, this.speed);
 
-    this.playerX = constrain(this.playerX, this.playerSize, width-this.playerSize); 
-    this.playerY = constrain(this.playerY, this.playerSize, height);
+    this.x = constrain(this.x, this.size, width-this.size); 
+    this.y = constrain(this.y, this.size, height);
   }
 
   // PLAYER METHODS
   public String toString() {
-    return str(this.playerID);
+    return str(this.UID);
   }
 
   public int getUID() {
-    return this.playerID;
+    return this.UID;
   }
 
   public float[] getPosition() {
-    float[] position = {this.playerX, this.playerY};
-    return position;
+    //float[] position = {this.playerPos.x, this.playerPos.y};
+    return this.location.array();
   }
 
   public void setPosition(float _x, float _y) {
-    this.playerX = _x;
-    this.playerY = _y;
+    //this.playerX = _x;
+    //this.playerY = _y;
+    this.location.set(_x, _y);
   }
 
-  public float getX() {
-    return this.playerX;
-  }
+  //public float getX() {
+  //  return this.playerPos.x;
+  //}
 
-  public float getY() {
-    return this.playerY;
-  }
+  //public float getY() {
+  //  return this.playerPos.y;
+  //}
 
-  public void setX(float _x) {
-    this.playerX = _x;
-  }
+  //public void setX(float _x) {
+  //  this.playerX = _x;
+  //}
 
-  public void setY(float _y) {
-    this.playerY = _y;
-  }
+  //public void setY(float _y) {
+  //  this.playerY = _y;
+  //}
 
   public color getColor() {
-    return this.playerColor;
+    return this.pColor;
   }
 
   public void setColor(color _newColor) {
-    this.playerColor = _newColor;
+    this.pColor = _newColor;
   }
 
-  public float getSpeed() {
-    return this.playerSpeed;
-  }
+  //public float getSpeed() {
+  //  return this.playerSpeed;
+  //}
 
-  public void setSpeed(float _speed) {
-    this.playerSpeed = _speed;
-  }
+  //public void setSpeed(float _speed) {
+  //  this.playerSpeed = _speed;
+  //}
 
   public void setDefaultSpeed() {
-    this.playerSpeed = DEFAULT_SPEED;
+    this.speed = DEFAULT_SPEED;
   }
 }
