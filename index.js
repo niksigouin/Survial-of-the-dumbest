@@ -66,7 +66,6 @@ server.on('message', (msg, rinfo) => {
     for (let clients = 0; clients < clientList.length; clients++) {
         client.send("/connect", clientList[clients]);
     }
-    // client.send("/connect", clientList);
 });
 
 // Listen on the port [HTTPPORT] for http requests
