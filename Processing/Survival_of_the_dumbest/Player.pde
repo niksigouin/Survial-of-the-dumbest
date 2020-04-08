@@ -93,7 +93,7 @@ class Player {
   }
 
   public int getUID() {
-    return this.UID;
+    return this.playerID;
   }
 
   public float[] getPosition() {
