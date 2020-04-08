@@ -71,7 +71,7 @@ server.on('message', (msg, rinfo) => {
 // Listen on the port [HTTPPORT] for http requests
 http.listen(HTTP_PORT, function () {
     client = new Client(CLIENT_IP, EMIT_PORT);
-    client.send("/start", " ");
+    client.send("/start", "READY");
     console.log('Connect to:', internalIp.v4.sync() + ":" + HTTP_PORT);
 });
 

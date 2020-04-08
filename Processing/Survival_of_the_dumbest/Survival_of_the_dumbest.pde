@@ -16,6 +16,7 @@ void setup() {
   frameRate(60);
   size(1280, 720, P2D);
   smooth();
+
   oscP5 = new OscP5(this, 3334);
   remote = new NetAddress("127.0.0.1", 3335);
 
@@ -24,7 +25,7 @@ void setup() {
   oscP5.plug(this, "connectClient", "/connect");
   oscP5.plug(this, "disconnectClient", "/disconnect");
   oscP5.plug(this, "movePlayer", "/joystick");
-  
+
 
   debug = true;
 
@@ -39,13 +40,11 @@ void draw() {
   if (debug) {
     debugUI();
   }
-  
+
   // DISPLAYS ALL CONNECTED PLAYERS ON SCREEN
-  for(Player player : players){
-     player.display();
+  for (Player player : players) {
+    player.display();
   }
-  
- 
 }
 
 // ADDS CONNECTED USER
@@ -54,8 +53,7 @@ void connectClient(int _id) {
   if (players.contains(playerIndex(_id))) {
     println("User", _id, "already connected!");
   } else {
-    players.add(new Player(width/2, height/2, 65, 130, _id));
-
+    players.add(new Player(width/2, height/2, 65, _id));
     println("Joined:", _id);
     printArray(players);
   }
@@ -64,10 +62,12 @@ void connectClient(int _id) {
 // REMOVES DISCONNECTED USER
 void disconnectClient(int _id) { 
   // REMOVES PLAYER FROM ARRAY
-  if (players.size() >= 0 && players.contains(playerIndex(_id)) == false) {
+  if (players.size() > 0 && players.contains(playerIndex(_id)) == false) {
     players.remove(playerIndex(_id));
     println("Left:", _id);
     printArray(players);
+  } else {
+    println("User", players.get(playerIndex(_id)), "tried to leave!");
   }
 }
 
@@ -79,12 +79,14 @@ void movePlayer(int _id, String _x, String _y) {
 // WHEN HTTP  SERVER CONNECTS, CLEAR CLIENT ARRAYLIST
 // THIS INSURES THAT ALL CLIENTS MATCH
 void rebaseClientArray(String _state) {
-  println("Node.js server restarted -> Clearing players ArrayList!");
-  players.clear();
+  if (_state.equals("READY")) {
+    println("Node.js server", _state, "-> Clearing players ArrayList!");
+    players.clear();
+  }
 }
 
 void oscEvent(OscMessage oscMessage) {
-  String address = oscMessage.addrPattern();
+  //String address = oscMessage.addrPattern();
   //// Gets the first value of the osc message (Use of idex is for an array of values
   //// EX: 
   //// OSC MESSAGE OBJECT -> {IP ADDRESS}/XYPAD [12, 19]
@@ -135,7 +137,7 @@ void debugUI() {
 int playerIndex(int _id) {
   int playerIndex = -1;
   for (int i=0; i < players.size(); i++) {
-    if (players.get(i).getID() == _id) {
+    if (players.get(i).getUID() == _id) {
       playerIndex = i;
     }
   }
