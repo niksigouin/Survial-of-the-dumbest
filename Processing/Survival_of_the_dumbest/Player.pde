@@ -1,5 +1,5 @@
 class Player {
-  private int UID; // Player Identifier variable
+  private Integer UID; // Player Identifier variable
   private PVector location; // Player location
   private PVector velocity; // Player velocity
   private PVector acceleration; // Player velocity
@@ -92,8 +92,8 @@ class Player {
     return str(this.UID);
   }
 
-  public int getUID() {
-    return this.playerID;
+  public Integer getUID() {
+    return this.UID;
   }
 
   public float[] getPosition() {
