@@ -1,11 +1,13 @@
 class Player {
-  private PVector location;
   private int UID; // Player Identifier variable
-  private float x, y; // Player position vars
+  private PVector location; // Player location
+  private PVector velocity; // Player velocity
+  
+  //private float x, y; // Player position vars
   //private float playerWidth, playerHeight; // Player size vars.
   private float size; // Player size vars.
-  private float velocityX, velocityY; // Velocity vars.
-  private float accelerationX, accelerationY; // Acceleration vars.
+  //private float velocityX, velocityY; // Velocity vars.
+  //private float accelerationX, accelerationY; // Acceleration vars.
   private final float DEFAULT_SPEED = 1.0;
   private float speed = DEFAULT_SPEED;
   private color pColor = color( random(0, 360), 100, random(75, 100)); // GENERATES RANDOM COLOR FOR USER
@@ -15,6 +17,8 @@ class Player {
     this.location = new PVector(_x, _y);
     //this.playerX = _x;
     //this.playerY = _y;
+    // SPEED = MAP VELOCITY FROM -50, 50 to whatsever
+    this.velocity = new PVector();
     this.size = _size;
     //this.playerWidth = _w;
     //this.playerHeight = _h;
@@ -42,17 +46,21 @@ class Player {
   }
 
   void move(float _x, float _y) {
-    redraw();
-    this.velocityX += this.accelerationX;
-    this.velocityY += this.accelerationY;
-    this.x += this.velocityX;
-    this.y += this.velocityY;
+    //this.velocityX = map(_x, -50.0, 50.0, -this.speed, this.speed);
+    //this.velocityY = map(_y, -50.0, 50.0, -this.speed, this.speed);
+    
+    this.velocity.set(map(_x, -50, 50, -this.speed, this.speed), map(_y, -50, 50, -this.speed, this.speed));
+    this.location.add(this.velocity);
+    //redraw();
+    //this.velocityX += this.accelerationX;
+    //this.velocityY += this.accelerationY;
+    //this.x += this.velocityX;
+    //this.y += this.velocityY;
 
-    this.velocityX = map(_x, -50.0, 50.0, -this.speed, this.speed);
-    this.velocityY = map(_y, -50.0, 50.0, -this.speed, this.speed);
+    
 
-    this.x = constrain(this.x, this.size, width-this.size); 
-    this.y = constrain(this.y, this.size, height);
+    this.location.x = constrain(this.location.x, this.size, width-this.size); 
+    this.location.y = constrain(this.location.y, this.size, height-this.size); 
   }
 
   // PLAYER METHODS
@@ -107,7 +115,7 @@ class Player {
   //  this.playerSpeed = _speed;
   //}
 
-  public void setDefaultSpeed() {
-    this.speed = DEFAULT_SPEED;
-  }
+  //public void setDefaultSpeed() {
+  //  this.speed = DEFAULT_SPEED;
+  //}
 }
