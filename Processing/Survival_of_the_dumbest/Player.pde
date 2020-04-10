@@ -1,13 +1,9 @@
 class Player {
   private Integer UID; // Player Identifier variable
-  private PVector location; // Player location
-  private PVector velocity; // Player velocity
-  private PVector acceleration; // Player velocity
-  //private float x, y; // Player position vars
-  //private float playerWidth, playerHeight; // Player size vars.
+  private PVector pos; // Player location
+  private PVector vel; // Player velocity
+  private PVector acc; // Player velocity
   private float size; // Player size vars.
-  //private float velocityX, velocityY; // Velocity vars.
-  //private float accelerationX, accelerationY; // Acceleration vars.
   private final float DEFAULT_SPEED = 1.0;
   private float speed = DEFAULT_SPEED;
   private color pColor = color( random(0, 360), 100, random(75, 100)); // GENERATES RANDOM COLOR FOR USER
@@ -15,44 +11,27 @@ class Player {
   // CHANGE PARAMS ORDER TO MATCH CONSTRUCTOR
   Player(float _x, float _y, float _size, int _id) {
     this.UID = _id;
-    this.location = new PVector(_x, _y);
-    this.velocity = new PVector(0, 0);
-    this.acceleration = new PVector(0, 0);
+    this.pos = new PVector(_x, _y);
+    this.vel = new PVector(0, 0);
+    this.acc = new PVector(0, 0);
     this.size = _size;
-    //this.playerX = _x;
-    //this.playerY = _y;
-    // SPEED = MAP VELOCITY FROM -50, 50 to whatsever
-
-
-    //this.playerWidth = _w;
-    //this.playerHeight = _h;
   }
 
   // DISPLAYS PLAYER
   // Change player to new game
   void display() {
     colorMode(HSB, 360, 100, 100);
-    //rectMode(CENTER);
     pushMatrix();
-    translate(this.location.x, this.location.y);
+    translate(this.pos.x, this.pos.y);
     fill(this.pColor);
     stroke(0);
     strokeWeight(this.size * 0.05);
     circle(0, 0, this.size);
-
-
-    // DISPLAY USER ID
-    fill(0);
-    textAlign(CENTER, BOTTOM);
-    text(str(this.UID), 0, -this.size/2);
     popMatrix();
   }
 
   void move(float _x, float _y) {
     PVector reference = new PVector(0, 0);
-    //this.velocityX = map(_x, -50.0, 50.0, -this.speed, this.speed);
-    //this.velocityY = map(_y, -50.0, 50.0, -this.speed, this.speed);
-
     //this.velocity.set(map(_x, -50, 50, -this.speed, this.speed), map(_y, -50, 50, -this.speed, this.speed));
     //println(_x, _y);
     //PVector joystick = new PVector(_x, _y);
@@ -62,29 +41,19 @@ class Player {
 
     //this.acceleration = joystick;
     //this.acceleration.set(_x, _y);
-    this.acceleration.set(_x, _y);
-    this.acceleration.limit(2);
-    this.acceleration.div(5);
-    this.velocity.add(this.acceleration);
-    this.location.add(this.velocity);
-    this.velocity.limit(2);
+    this.acc.set(_x, _y);
+    this.acc.limit(2);
+    this.acc.div(5);
+    this.vel.add(this.acc);
+    this.pos.add(this.vel);
+    this.vel.limit(2);
     
-
-    //redraw();
-    //this.velocityX += this.accelerationX;
-    //this.velocityY += this.accelerationY;
-    //this.x += this.velocityX;
-    //this.y += this.velocityY;
-    if (this.acceleration.equals(reference)) {
-      this.velocity.set(0, 0);
-      //println("OY");
+    if (this.acc.equals(reference)) {
+      this.vel.set(0, 0);
     }
 
-
-
-
-    this.location.x = constrain(this.location.x, (this.size/2), width-(this.size/2)); 
-    this.location.y = constrain(this.location.y, (this.size/2), height-(this.size/2));
+    this.pos.x = constrain(this.pos.x, (this.size/2), width-(this.size/2)); 
+    this.pos.y = constrain(this.pos.y, (this.size/2), height-(this.size/2));
   }
 
   // PLAYER METHODS
@@ -96,32 +65,20 @@ class Player {
     return this.UID;
   }
 
-  public float[] getPosition() {
+  public float[] getPosArray() {
     //float[] position = {this.playerPos.x, this.playerPos.y};
-    return this.location.array();
+    return this.pos.array();
+  }
+  
+  public PVector getPos() {
+    return this.pos;
   }
 
   public void setPosition(float _x, float _y) {
     //this.playerX = _x;
     //this.playerY = _y;
-    this.location.set(_x, _y);
+    this.pos.set(_x, _y);
   }
-
-  //public float getX() {
-  //  return this.playerPos.x;
-  //}
-
-  //public float getY() {
-  //  return this.playerPos.y;
-  //}
-
-  //public void setX(float _x) {
-  //  this.playerX = _x;
-  //}
-
-  //public void setY(float _y) {
-  //  this.playerY = _y;
-  //}
 
   public color getColor() {
     return this.pColor;
@@ -130,16 +87,13 @@ class Player {
   public void setColor(color _newColor) {
     this.pColor = _newColor;
   }
-
-  //public float getSpeed() {
-  //  return this.playerSpeed;
-  //}
-
-  //public void setSpeed(float _speed) {
-  //  this.playerSpeed = _speed;
-  //}
-
-  //public void setDefaultSpeed() {
-  //  this.speed = DEFAULT_SPEED;
-  //}
+  
+  public void displayID(){
+    pushMatrix();
+    translate(this.pos.x, this.pos.y);
+    fill(0);
+    textAlign(CENTER, BOTTOM);
+    text(str(getUID()), 0, -this.size/2);
+    popMatrix();
+  }
 }
