@@ -1,3 +1,13 @@
+/*
+ * Titre: EDM4600 Travail final: "Survie des génies"
+ * Auteur: Nikolas Sigouin
+ * Version: 1.0
+ * Instructions: [ADD INSTRUCTIONS ON HOW TO CONNECT PLAYER]
+ * Description du projet
+ * Notes: Quelques notes optionnelles à l'intention du correcteur.
+ * Lien: Un lien vers votre page web bonus (optionnel).
+ */
+
 import java.util.*;
 import java.io.*;
 import netP5.*;
@@ -77,7 +87,10 @@ void disconnectClient(int _id) {
 
 void movePlayer(int _id, String _x, String _y) {
   Integer _UID = new Integer(_id); // CONVERTS INT TO PRIMITIVE INTERGER
-  players.get(_UID).move(Float.parseFloat(_x), Float.parseFloat(_y)); // GETS THE KEY OF THE PLAYER ANV MOVE
+  
+  if (players.containsKey(_UID)) {
+    players.get(_UID).move(Float.parseFloat(_x), Float.parseFloat(_y)); // GETS THE KEY OF THE PLAYER ANV MOVE
+  }
 }
 
 // WHEN HTTP  SERVER CONNECTS, CLEAR CLIENT ARRAYLIST
@@ -95,7 +108,7 @@ void oscEvent(OscMessage oscMessage) {
 
 void sendSketchState() {
   OscMessage myMessage = new OscMessage("/sketch");
-  
+
   // SENDS THE MESSAGE TO THE NODE.JS SERVER
   oscP5.send(myMessage, remote);
 }
