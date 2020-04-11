@@ -3,9 +3,11 @@ class ToiletRoll {
   private float size;
   private boolean isUsable;
 
-  ToiletRoll(PVector loc_, float size_) {
+  //public ArrayList<ToiletRoll> gameRolls = new ArrayList<ToiletRoll>();
+
+  ToiletRoll(PVector loc_) {
     this.loc = loc_;
-    this.size = size_;
+    this.size = 20;
     this.isUsable = false;
   }
 
@@ -21,6 +23,16 @@ class ToiletRoll {
     popStyle();
     popMatrix();
   }
-  
-  
+
+  //public void spawnRolls(int numRolls_) {
+  //  for (int i=0; i < numRolls_; i++) {
+  //    gameRolls.add(new ToiletRoll(new PVector(random(width), random(height))));
+  //  }
+  //}
+
+  //public void displayRolls() {
+  //  for (ToiletRoll toiletRoll : gameRolls) {
+  //    toiletRoll.display();
+  //  }
+  //}
 }

@@ -16,12 +16,14 @@ import oscP5.*;
 OscP5 oscP5;
 NetAddress remote;
 
+ItemHandler items = new ItemHandler();
+
 // ARRAY OF CONNECT PLAYERS
 HashMap<Integer, Player> players = new HashMap<Integer, Player>();
 
 // TP Rolls
 int numRolls = 10;
-ArrayList<ToiletRoll> gameRolls = new ArrayList<ToiletRoll>();
+int numGerms = 10;
 
 String client;
 public boolean DEBUG = true; // SHOW DEBUG UI
@@ -40,9 +42,12 @@ void setup() {
   oscP5.plug(this, "disconnectClient", "/disconnect");
   oscP5.plug(this, "movePlayer", "/joystick");
 
-  for (int i=0; i < numRolls; i++) {
-    gameRolls.add(new ToiletRoll(new PVector(random(width), random(height)), 20));
-  }
+  //for (int i=0; i < numRolls; i++) {
+  //  gameRolls.add(new ToiletRoll(new PVector(random(width), random(height))));
+  //}
+
+  items.spawnRolls(numRolls);
+  items.spawGerms(numGerms);
 
   if (DEBUG) {
     players.put(127, new Player(width/2, height/2, 65, 127));
@@ -55,14 +60,17 @@ void setup() {
 
 void draw() {
   background(106);
-  for (ToiletRoll toiletRoll : gameRolls) {
-    toiletRoll.display();
-  }
+
+  // INTERGRATE DISPLAY IN UPDATE?
+  items.displayRolls();
+  items.displayGerms();
+
+  items.update();
 
   // DISPLAYS ALL CONNECTED PLAYERS ON SCREEN
   for (Player player : players.values()) {
     player.display();
-    player.update();
+    //player.update();
   }
 
   // Draws the UI
@@ -72,77 +80,19 @@ void draw() {
   }
 }
 
-// ADDS CONNECTED USER
-void connectClient(int _id) {
-  Integer _UID = new Integer(_id); // CONVERTS INT TO PRIMITIVE INTERGER
-
-  println("Joined:", _UID);
-  players.putIfAbsent(_UID, new Player(width/2, height/2, 65, _id));
-  printArray(players);
-} 
-
-// REMOVES DISCONNECTED USER
-void disconnectClient(int _id) { 
-  Integer _UID = new Integer(_id); // CONVERTS INT TO PRIMITIVE INTERGER
-  Iterator<Integer> iterator = players.keySet().iterator(); // ITERATOR FOR PLAYER KEYS
-
-  // ITERATES THROUGH THE UIDs
-  while (iterator.hasNext()) {
-    Integer player = iterator.next();
-
-    // IF THE UID EQUALS THE CURENT ITERATION, REMOVE IT AND PRINT TO CONSOLE
-    if (player.equals(_UID)) {
-      iterator.remove();
-      println("Left:", _UID);
-      printArray(players);
-    }
-  }
-}
-
-// HANDLES PLAYER MOVEMENTS
-void movePlayer(int _id, String _x, String _y) {
-  Integer _UID = new Integer(_id); // CONVERTS INT TO PRIMITIVE INTERGER
-
-  if (players.containsKey(_UID)) {
-    players.get(_UID).move(Float.parseFloat(_x), Float.parseFloat(_y)); // GETS THE KEY OF THE PLAYER ANV MOVE
-  }
-}
-
-// WHEN HTTP  SERVER CONNECTS, CLEAR CLIENT ARRAYLIST
-// THIS INSURES THAT ALL CLIENTS MATCH
-void rebaseClientArray(String _state) {
-  if (_state.equals("READY")) {
-    println("Node.js server", _state, "-> Clearing players ArrayList!");
-    players.clear();
-  }
-}
-
-void oscEvent(OscMessage oscMessage) {
-  //println("Type: " + oscMessage.typetag(), "Message: " + oscMessage);
-}
-
-// HANDLES INITIAL
-void sendSketchState() {
-  OscMessage myMessage = new OscMessage("/sketch");
-
-  // SENDS THE MESSAGE TO THE NODE.JS SERVER
-  oscP5.send(myMessage, remote);
+void mousePressed() {
+  if (DEBUG) items.spawnRolls(10);
 }
 
 // DEBUG UI
 void debugUI() {
   fill(255);
-  
-  //// Local player roll count
-  //textAlign(LEFT, BOTTOM);
-  //textSize(20);
-  //text("Rolls: " + players.get(127).rollCount(), 5, height-30);
-  
+
   // Num clients
   textAlign(LEFT, BOTTOM);
   textSize(20);
   text(players.size() + " clients: " + players.values(), 5, height-5);
-  
+
   //FrameRate
   textAlign(LEFT, TOP);
   text((int) frameRate, 0, 0);
