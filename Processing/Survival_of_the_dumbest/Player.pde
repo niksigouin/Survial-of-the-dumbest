@@ -64,18 +64,6 @@ class Player {
     this.pos.x = constrain(this.pos.x, (this.size/2), width-(this.size/2)); 
     this.pos.y = constrain(this.pos.y, (this.size/2), height-(this.size/2));
   }
-
-  // IF THE UID EQUALS THE CURENT ITERATION, REMOVE IT AND PRINT TO CONSOLE
-  //if (collected_.getClass() == ToiletRoll.class) {
-  //  int rollIndex = gameRolls.indexOf(collected_);
-  //  ToiletRoll toTransfer = gameRolls.get(rollIndex);
-  //  iterator.remove(thisRoll);
-  //  rolls.add(toTransfer);
-  //}
-  //  if (thisRoll.equals(collected_)) {
-  //    gameRollIter.remove();
-  //    rolls.add(new ToiletRoll(new PVector(0.0,0.0),0));
-  //  }
   
   public int rollCount() {
     return this.rolls.size();
@@ -92,11 +80,6 @@ class Player {
 
   public Integer getUID() {
     return this.UID;
-  }
-
-  public float[] getPosArray() {
-    //float[] position = {this.playerPos.x, this.playerPos.y};
-    return this.pos.array();
   }
 
   public PVector getPos() {
@@ -123,27 +106,20 @@ class Player {
     text(str(getUID()), 0, -this.size/2);
     popMatrix();
   }
-
-  public void displayRollCount() {
+  
+  void displayPlayerInfo(){
     pushMatrix();
+    pushStyle();
     translate(this.pos.x, this.pos.y);
     fill(0);
-    textAlign(CENTER, CENTER);
-    text("R: " + rollCount(), 0, 0);
+    textSize(15);
+    textAlign(CENTER, BOTTOM);
+    text("UID: " + getUID(), 0, -this.size / 2);
+    textAlign(CENTER, TOP);
+    String items = "\nRolls: " + rollCount() + 
+                   "\nGerms: " + germCount();
+    text(items,  0, this.size / 4);
+    popStyle();
     popMatrix();
-  }
-  
-  public void displayGermCount() {
-    pushMatrix();
-    translate(this.pos.x, this.pos.y);
-    fill(0);
-    textAlign(CENTER, CENTER);
-    text("G: " + germCount(), 0, 0);
-    popMatrix();
-  }
-  
-  public void displayPlayerInfo() {
-    displayUID();
-    displayRollCount();
   }
 }

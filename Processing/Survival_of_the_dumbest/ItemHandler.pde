@@ -7,6 +7,10 @@ class ItemHandler {
   public ArrayList<ToiletRoll> gameRolls = new ArrayList<ToiletRoll>();
   public ArrayList<Germ> gameGerms = new ArrayList<Germ>();
 
+  //private Iterator<Player> playerIter = playerHandler.players.values().iterator();
+  //private Iterator<ToiletRoll> gameRollIter = itemHandler.gameRolls.iterator();
+  //private Iterator<Germ> gameGermIter = itemHandler.gameGerms.iterator();
+
   public void update() {
     Iterator<Player> playerIter = playerHandler.players.values().iterator();
     Iterator<ToiletRoll> gameRollIter = itemHandler.gameRolls.iterator();
@@ -14,6 +18,8 @@ class ItemHandler {
 
     while (playerIter.hasNext()) { // && playerIter.hasNext()
       Player thisPlayer = playerIter.next();
+
+      // MANIPULATES THE ToiletRolls
       while (gameRollIter.hasNext()) {
         ToiletRoll thisRoll = gameRollIter.next();
 
@@ -22,9 +28,21 @@ class ItemHandler {
           gameRollIter.remove();
         }
       }
+
+      // MANIPULATES THE GERMS
+      while (gameGermIter.hasNext()) {
+        Germ thisGerm = gameGermIter.next();
+
+        if (thisPlayer.pos.dist(thisGerm.loc) < thisPlayer.size / 2 + thisGerm.size / 2) { // SET PICKUP RADIUS AND DISPLAY THE ACTUAL RADIUS WITH A FUNCTION?
+          thisPlayer.germs.add(thisGerm);
+          gameGermIter.remove();
+        }
+      }
     }
   }
-
+  
+  
+  
   public void spawGerms(int numGerms_) {
     for (int i=0; i < numGerms_; i++) {
       gameGerms.add(new Germ(new PVector(random(width), random(height))));
@@ -32,8 +50,8 @@ class ItemHandler {
   }
 
   public void displayGerms() {
-    for (ToiletRoll toiletRoll : gameRolls) {
-      toiletRoll.display();
+    for (Germ germ : gameGerms) {
+      germ.display();
     }
   }
 

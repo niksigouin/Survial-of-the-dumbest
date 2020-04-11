@@ -19,13 +19,10 @@ NetAddress remote;
 PlayerHandler playerHandler = new PlayerHandler();
 ItemHandler itemHandler = new ItemHandler();
 
-
-
-// TP Rolls
+// NUMBER OF ITEMS TO SPAWN WHEN GAME STARTS
 int numRolls = 10;
 int numGerms = 10;
 
-String client;
 public boolean DEBUG = true; // SHOW DEBUG UI
 
 void setup() {
@@ -46,7 +43,7 @@ void setup() {
   if (DEBUG) {
     playerHandler.createLocalPlayer();
   }
-  
+
   // SENDS A MESSAGE TO THE NODE.JS SERVER TO GRAB CONNECTED CLIENTS
   sendSketchState();
 }
@@ -59,24 +56,17 @@ void draw() {
   itemHandler.displayGerms();
 
   itemHandler.update();
-  
+
   playerHandler.update();
 
-  //// DISPLAYS ALL CONNECTED PLAYERS ON SCREEN
-  //for (Player player : players.values()) {
-  //  player.display();
-  //  //player.update();
-  //}
-
-  // Draws the UI
-  if (DEBUG) {
-    debugUI();
-    //playerHandler.players.get(127).setPosition(mouseX, mouseY);
-  }
+  debugUI();
 }
 
 void mousePressed() {
-  if (DEBUG) itemHandler.spawnRolls(10);
+  if (DEBUG) {
+    itemHandler.spawnRolls(10);
+    itemHandler.spawGerms(10);
+  }
 }
 
 // WHEN HTTP  SERVER CONNECTS, CLEAR CLIENT ARRAYLIST
@@ -102,14 +92,16 @@ void sendSketchState() {
 
 // DEBUG UI
 void debugUI() {
-  fill(255);
+  if (DEBUG) {
+    fill(255);
 
-  // Num clients
-  textAlign(LEFT, BOTTOM);
-  textSize(20);
-  text(playerHandler.players.size() + " clients: " + playerHandler.players.values(), 5, height-5);
+    // Num clients
+    textAlign(LEFT, BOTTOM);
+    textSize(20);
+    text(playerHandler.players.size() + " clients: " + playerHandler.players.values(), 5, height-5);
 
-  //FrameRate
-  textAlign(LEFT, TOP);
-  text((int) frameRate, 0, 0);
+    //FrameRate
+    textAlign(LEFT, TOP);
+    text((int) frameRate, 0, 0);
+  }
 }
