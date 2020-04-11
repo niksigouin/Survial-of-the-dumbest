@@ -16,10 +16,10 @@ import oscP5.*;
 OscP5 oscP5;
 NetAddress remote;
 
-ItemHandler items = new ItemHandler();
+PlayerHandler playerHandler = new PlayerHandler();
+ItemHandler itemHandler = new ItemHandler();
 
-// ARRAY OF CONNECT PLAYERS
-HashMap<Integer, Player> players = new HashMap<Integer, Player>();
+
 
 // TP Rolls
 int numRolls = 10;
@@ -38,22 +38,15 @@ void setup() {
 
   // TRANSFERS THE "/client" MESSAGES TO clientList MATHOD FOR PROCESSING
   oscP5.plug(this, "rebaseClientArray", "/start");
-  oscP5.plug(this, "connectClient", "/connect");
-  oscP5.plug(this, "disconnectClient", "/disconnect");
-  oscP5.plug(this, "movePlayer", "/joystick");
+  playerHandler.plugPlayerMessages();
 
-  //for (int i=0; i < numRolls; i++) {
-  //  gameRolls.add(new ToiletRoll(new PVector(random(width), random(height))));
-  //}
-
-  items.spawnRolls(numRolls);
-  items.spawGerms(numGerms);
+  itemHandler.spawnRolls(numRolls);
+  itemHandler.spawGerms(numGerms);
 
   if (DEBUG) {
-    players.put(127, new Player(width/2, height/2, 65, 127));
+    playerHandler.createLocalPlayer();
   }
-
-
+  
   // SENDS A MESSAGE TO THE NODE.JS SERVER TO GRAB CONNECTED CLIENTS
   sendSketchState();
 }
@@ -62,26 +55,49 @@ void draw() {
   background(106);
 
   // INTERGRATE DISPLAY IN UPDATE?
-  items.displayRolls();
-  items.displayGerms();
+  itemHandler.displayRolls();
+  itemHandler.displayGerms();
 
-  items.update();
+  itemHandler.update();
+  
+  playerHandler.update();
 
-  // DISPLAYS ALL CONNECTED PLAYERS ON SCREEN
-  for (Player player : players.values()) {
-    player.display();
-    //player.update();
-  }
+  //// DISPLAYS ALL CONNECTED PLAYERS ON SCREEN
+  //for (Player player : players.values()) {
+  //  player.display();
+  //  //player.update();
+  //}
 
   // Draws the UI
   if (DEBUG) {
     debugUI();
-    players.get(127).setPosition(mouseX, mouseY);
+    //playerHandler.players.get(127).setPosition(mouseX, mouseY);
   }
 }
 
 void mousePressed() {
-  if (DEBUG) items.spawnRolls(10);
+  if (DEBUG) itemHandler.spawnRolls(10);
+}
+
+// WHEN HTTP  SERVER CONNECTS, CLEAR CLIENT ARRAYLIST
+// THIS INSURES THAT ALL CLIENTS MATCH
+void rebaseClientArray(String _state) {
+  if (_state.equals("READY")) {
+    println("Node.js server", _state, "-> Clearing players ArrayList!");
+    playerHandler.players.clear();
+  }
+}
+
+void oscEvent(OscMessage oscMessage) {
+  //println("Type: " + oscMessage.typetag(), "Message: " + oscMessage);
+}
+
+// HANDLES INITIAL
+void sendSketchState() {
+  OscMessage myMessage = new OscMessage("/sketch");
+
+  // SENDS THE MESSAGE TO THE NODE.JS SERVER
+  oscP5.send(myMessage, remote);
 }
 
 // DEBUG UI
@@ -91,7 +107,7 @@ void debugUI() {
   // Num clients
   textAlign(LEFT, BOTTOM);
   textSize(20);
-  text(players.size() + " clients: " + players.values(), 5, height-5);
+  text(playerHandler.players.size() + " clients: " + playerHandler.players.values(), 5, height-5);
 
   //FrameRate
   textAlign(LEFT, TOP);

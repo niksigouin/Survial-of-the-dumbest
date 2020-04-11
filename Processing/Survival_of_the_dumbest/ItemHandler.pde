@@ -8,9 +8,9 @@ class ItemHandler {
   public ArrayList<Germ> gameGerms = new ArrayList<Germ>();
 
   public void update() {
-    Iterator<Player> playerIter = players.values().iterator();
-    Iterator<ToiletRoll> gameRollIter = items.gameRolls.iterator();
-    Iterator<Germ> gameGermIter = items.gameGerms.iterator();
+    Iterator<Player> playerIter = playerHandler.players.values().iterator();
+    Iterator<ToiletRoll> gameRollIter = itemHandler.gameRolls.iterator();
+    Iterator<Germ> gameGermIter = itemHandler.gameGerms.iterator();
 
     while (playerIter.hasNext()) { // && playerIter.hasNext()
       Player thisPlayer = playerIter.next();
