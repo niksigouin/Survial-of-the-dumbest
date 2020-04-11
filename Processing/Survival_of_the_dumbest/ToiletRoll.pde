@@ -12,6 +12,7 @@ class ToiletRoll {
   public void display() {
     pushMatrix();
     pushStyle();
+    //ellipseMode(RADIUS);
     translate(this.loc.x, this.loc.y);
     fill(255);
     stroke(0);

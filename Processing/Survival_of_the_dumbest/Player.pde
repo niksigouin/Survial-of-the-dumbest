@@ -10,6 +10,7 @@ class Player {
 
   private ArrayList<ToiletRoll> rolls = new ArrayList<ToiletRoll>();
 
+
   // CHANGE PARAMS ORDER TO MATCH CONSTRUCTOR
   Player(float _x, float _y, float _size, int _id) {
     this.UID = _id;
@@ -22,13 +23,16 @@ class Player {
   // DISPLAYS PLAYER
   // Change player to new game
   void display() {
-    colorMode(HSB, 360, 100, 100);
     pushMatrix();
+    pushStyle();
+    //ellipseMode(RADIUS);
+    colorMode(HSB, 360, 100, 100);
     translate(this.pos.x, this.pos.y);
     fill(this.pColor);
     stroke(0);
     strokeWeight(this.size * 0.05);
     circle(0, 0, this.size);
+    popStyle();
     popMatrix();
   }
 
@@ -49,7 +53,7 @@ class Player {
     this.vel.add(this.acc);
     this.pos.add(this.vel);
     this.vel.limit(2);
-
+    
     if (this.acc.equals(reference)) {
       this.vel.set(0, 0);
     }
@@ -59,44 +63,31 @@ class Player {
   }
 
   public void update() {
-    for (ToiletRoll roll : gameRolls) {
-      if (this.pos.dist(roll.loc) < this.size*1.5 + roll.size) {
-        collect(roll);
-      }
-    }
-  }
+    Iterator<ToiletRoll> gameRollIter = gameRolls.iterator();
 
-  private void collect(ToiletRoll collected_) {
-    Iterator<ToiletRoll> gameRollIter = gameRolls.iterator(); // ITERATOR FOR PLAYER KEYS
-    
-    
-
-    // ITERATES THROUGH THE UIDs
     while (gameRollIter.hasNext()) {
       ToiletRoll thisRoll = gameRollIter.next();
-      
-      if(thisRoll.equals(collected_)){
-         println("Picked up roll #",gameRolls.indexOf(thisRoll));
-      }
-      
-      
-      
-      
 
-    //  // IF THE UID EQUALS THE CURENT ITERATION, REMOVE IT AND PRINT TO CONSOLE
-    //  //if (collected_.getClass() == ToiletRoll.class) {
-    //  //  int rollIndex = gameRolls.indexOf(collected_);
-    //  //  ToiletRoll toTransfer = gameRolls.get(rollIndex);
-    //  //  iterator.remove(thisRoll);
-    //  //  rolls.add(toTransfer);
-    //  //}
-    //  if (thisRoll.equals(collected_)) {
-    //    gameRollIter.remove();
-    //    rolls.add(new ToiletRoll(new PVector(0.0,0.0),0));
-    //  }
+      if (this.pos.dist(thisRoll.loc) < this.size / 2 + thisRoll.size / 2) { // SET PICKUP RADIUS AND DISPLAY THE ACTUAL RADIUS WITH A FUNCTION?
+        rolls.add(thisRoll);
+        gameRollIter.remove();
+      }
     }
   }
-  
+
+  //  // IF THE UID EQUALS THE CURENT ITERATION, REMOVE IT AND PRINT TO CONSOLE
+  //  //if (collected_.getClass() == ToiletRoll.class) {
+  //  //  int rollIndex = gameRolls.indexOf(collected_);
+  //  //  ToiletRoll toTransfer = gameRolls.get(rollIndex);
+  //  //  iterator.remove(thisRoll);
+  //  //  rolls.add(toTransfer);
+  //  //}
+  //  if (thisRoll.equals(collected_)) {
+  //    gameRollIter.remove();
+  //    rolls.add(new ToiletRoll(new PVector(0.0,0.0),0));
+  //  }
+
+
   public int rollCount() {
     return this.rolls.size();
   }
@@ -114,7 +105,7 @@ class Player {
     //float[] position = {this.playerPos.x, this.playerPos.y};
     return this.pos.array();
   }
-
+  
   public PVector getPos() {
     return this.pos;
   }
@@ -132,8 +123,8 @@ class Player {
   public void setColor(color _newColor) {
     this.pColor = _newColor;
   }
-
-  public void displayID() {
+  
+  public void displayID(){
     pushMatrix();
     translate(this.pos.x, this.pos.y);
     fill(0);
