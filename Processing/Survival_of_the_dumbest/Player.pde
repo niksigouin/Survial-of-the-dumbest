@@ -34,6 +34,11 @@ class Player {
     circle(0, 0, this.size);
     popStyle();
     popMatrix();
+    
+    if(DEBUG) {
+      displayUID();
+      displayRolls();
+    }
   }
 
   void move(float _x, float _y) {
@@ -111,8 +116,6 @@ class Player {
   }
 
   public void setPosition(float _x, float _y) {
-    //this.playerX = _x;
-    //this.playerY = _y;
     this.pos.set(_x, _y);
   }
 
@@ -124,12 +127,21 @@ class Player {
     this.pColor = _newColor;
   }
   
-  public void displayID(){
+  public void displayUID(){
     pushMatrix();
     translate(this.pos.x, this.pos.y);
     fill(0);
     textAlign(CENTER, BOTTOM);
     text(str(getUID()), 0, -this.size/2);
+    popMatrix();
+  }
+  
+  public void displayRolls(){
+    pushMatrix();
+    translate(this.pos.x, this.pos.y);
+    fill(0);
+    textAlign(CENTER, CENTER);
+    text(rollCount(), 0, 0);
     popMatrix();
   }
 }

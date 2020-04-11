@@ -24,7 +24,7 @@ int numRolls = 10;
 ArrayList<ToiletRoll> gameRolls = new ArrayList<ToiletRoll>();
 
 String client;
-boolean debug = true; // SHOW DEBUG UI
+public boolean DEBUG = true; // SHOW DEBUG UI
 
 void setup() {
   frameRate(60);
@@ -44,7 +44,7 @@ void setup() {
     gameRolls.add(new ToiletRoll(new PVector(random(width), random(height)), 20));
   }
 
-  if (debug) {
+  if (DEBUG) {
     players.put(127, new Player(width/2, height/2, 65, 127));
   }
 
@@ -66,15 +66,11 @@ void draw() {
   }
 
   // Draws the UI
-  if (debug) {
+  if (DEBUG) {
     debugUI();
     players.get(127).setPosition(mouseX, mouseY);
   }
 }
-
-//PVector randomLocation(){
-//  return PVector();
-//}
 
 // ADDS CONNECTED USER
 void connectClient(int _id) {
@@ -103,7 +99,7 @@ void disconnectClient(int _id) {
   }
 }
 
-
+// HANDLES PLAYER MOVEMENTS
 void movePlayer(int _id, String _x, String _y) {
   Integer _UID = new Integer(_id); // CONVERTS INT TO PRIMITIVE INTERGER
 
@@ -125,6 +121,7 @@ void oscEvent(OscMessage oscMessage) {
   //println("Type: " + oscMessage.typetag(), "Message: " + oscMessage);
 }
 
+// HANDLES INITIAL
 void sendSketchState() {
   OscMessage myMessage = new OscMessage("/sketch");
 
@@ -136,15 +133,15 @@ void sendSketchState() {
 void debugUI() {
   fill(255);
   
-  // Local player roll count
-  textAlign(LEFT, BOTTOM);
-  textSize(20);
-  text("Rolls: " + players.get(127).rollCount(), 5, height-30);
+  //// Local player roll count
+  //textAlign(LEFT, BOTTOM);
+  //textSize(20);
+  //text("Rolls: " + players.get(127).rollCount(), 5, height-30);
   
   // Num clients
   textAlign(LEFT, BOTTOM);
   textSize(20);
-  text("Clients: " + players, 5, height-5);
+  text(players.size() + " clients: " + players.values(), 5, height-5);
   
   //FrameRate
   textAlign(LEFT, TOP);
