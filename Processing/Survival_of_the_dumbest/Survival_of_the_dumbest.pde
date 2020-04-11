@@ -19,8 +19,12 @@ NetAddress remote;
 // ARRAY OF CONNECT PLAYERS
 HashMap<Integer, Player> players = new HashMap<Integer, Player>();
 
+// TP Rolls
+int numRolls = 10;
+ArrayList<ToiletRoll> gameRolls = new ArrayList<ToiletRoll>();
+
 String client;
-boolean debug = false; // SHOW DEBUG UI
+boolean debug = true; // SHOW DEBUG UI
 
 void setup() {
   frameRate(60);
@@ -36,8 +40,14 @@ void setup() {
   oscP5.plug(this, "disconnectClient", "/disconnect");
   oscP5.plug(this, "movePlayer", "/joystick");
 
+  for (int i=0; i < numRolls; i++) {
+    gameRolls.add(new ToiletRoll(new PVector(random(width), random(height)), 20));
+  }
 
-  debug = true;
+  if (debug) {
+    players.put(127, new Player(width/2, height/2, 65, 127));
+  }
+
 
   // SENDS A MESSAGE TO THE NODE.JS SERVER TO GRAB CONNECTED CLIENTS
   sendSketchState();
@@ -45,17 +55,26 @@ void setup() {
 
 void draw() {
   background(106);
-
-  // Draws the UI
-  if (debug) {
-    debugUI();
+  for (ToiletRoll toiletRoll : gameRolls) {
+    toiletRoll.display();
   }
 
   // DISPLAYS ALL CONNECTED PLAYERS ON SCREEN
   for (Player player : players.values()) {
     player.display();
+    player.update();
+  }
+
+  // Draws the UI
+  if (debug) {
+    debugUI();
+    players.get(127).setPosition(mouseX, mouseY);
   }
 }
+
+//PVector randomLocation(){
+//  return PVector();
+//}
 
 // ADDS CONNECTED USER
 void connectClient(int _id) {
@@ -87,7 +106,7 @@ void disconnectClient(int _id) {
 
 void movePlayer(int _id, String _x, String _y) {
   Integer _UID = new Integer(_id); // CONVERTS INT TO PRIMITIVE INTERGER
-  
+
   if (players.containsKey(_UID)) {
     players.get(_UID).move(Float.parseFloat(_x), Float.parseFloat(_y)); // GETS THE KEY OF THE PLAYER ANV MOVE
   }
@@ -116,9 +135,18 @@ void sendSketchState() {
 // DEBUG UI
 void debugUI() {
   fill(255);
+  
+  // Local player roll count
+  textAlign(LEFT, BOTTOM);
+  textSize(20);
+  text("Rolls: " + players.get(127).rollCount(), 5, height-30);
+  
+  // Num clients
   textAlign(LEFT, BOTTOM);
   textSize(20);
   text("Clients: " + players, 5, height-5);
+  
+  //FrameRate
   textAlign(LEFT, TOP);
   text((int) frameRate, 0, 0);
 }
