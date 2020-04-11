@@ -16,15 +16,14 @@ import oscP5.*;
 OscP5 oscP5;
 NetAddress remote;
 
-// ARRAY OF CONNECT PLAYERS
-HashMap<Integer, Player> players = new HashMap<Integer, Player>();
+PlayerHandler playerHandler = new PlayerHandler();
+ItemHandler itemHandler = new ItemHandler();
 
-// TP Rolls
+// NUMBER OF ITEMS TO SPAWN WHEN GAME STARTS
 int numRolls = 10;
-ArrayList<ToiletRoll> gameRolls = new ArrayList<ToiletRoll>();
+int numGerms = 10;
 
-String client;
-boolean debug = true; // SHOW DEBUG UI
+public boolean DEBUG = true; // SHOW DEBUG UI
 
 void setup() {
   frameRate(60);
@@ -36,18 +35,14 @@ void setup() {
 
   // TRANSFERS THE "/client" MESSAGES TO clientList MATHOD FOR PROCESSING
   oscP5.plug(this, "rebaseClientArray", "/start");
-  oscP5.plug(this, "connectClient", "/connect");
-  oscP5.plug(this, "disconnectClient", "/disconnect");
-  oscP5.plug(this, "movePlayer", "/joystick");
+  playerHandler.plugPlayerMessages();
 
-  for (int i=0; i < numRolls; i++) {
-    gameRolls.add(new ToiletRoll(new PVector(random(width), random(height)), 20));
+  itemHandler.spawnRolls(numRolls);
+  itemHandler.spawGerms(numGerms);
+
+  if (DEBUG) {
+    playerHandler.createLocalPlayer();
   }
-
-  if (debug) {
-    players.put(127, new Player(width/2, height/2, 65, 127));
-  }
-
 
   // SENDS A MESSAGE TO THE NODE.JS SERVER TO GRAB CONNECTED CLIENTS
   sendSketchState();
@@ -55,60 +50,22 @@ void setup() {
 
 void draw() {
   background(106);
-  for (ToiletRoll toiletRoll : gameRolls) {
-    toiletRoll.display();
-  }
 
-  // DISPLAYS ALL CONNECTED PLAYERS ON SCREEN
-  for (Player player : players.values()) {
-    player.display();
-    player.update();
-  }
+  // INTERGRATE DISPLAY IN UPDATE?
+  itemHandler.displayRolls();
+  itemHandler.displayGerms();
 
-  // Draws the UI
-  if (debug) {
-    debugUI();
-    players.get(127).setPosition(mouseX, mouseY);
-  }
+  itemHandler.update();
+
+  playerHandler.update();
+
+  debugUI();
 }
 
-//PVector randomLocation(){
-//  return PVector();
-//}
-
-// ADDS CONNECTED USER
-void connectClient(int _id) {
-  Integer _UID = new Integer(_id); // CONVERTS INT TO PRIMITIVE INTERGER
-
-  println("Joined:", _UID);
-  players.putIfAbsent(_UID, new Player(width/2, height/2, 65, _id));
-  printArray(players);
-} 
-
-// REMOVES DISCONNECTED USER
-void disconnectClient(int _id) { 
-  Integer _UID = new Integer(_id); // CONVERTS INT TO PRIMITIVE INTERGER
-  Iterator<Integer> iterator = players.keySet().iterator(); // ITERATOR FOR PLAYER KEYS
-
-  // ITERATES THROUGH THE UIDs
-  while (iterator.hasNext()) {
-    Integer player = iterator.next();
-
-    // IF THE UID EQUALS THE CURENT ITERATION, REMOVE IT AND PRINT TO CONSOLE
-    if (player.equals(_UID)) {
-      iterator.remove();
-      println("Left:", _UID);
-      printArray(players);
-    }
-  }
-}
-
-
-void movePlayer(int _id, String _x, String _y) {
-  Integer _UID = new Integer(_id); // CONVERTS INT TO PRIMITIVE INTERGER
-
-  if (players.containsKey(_UID)) {
-    players.get(_UID).move(Float.parseFloat(_x), Float.parseFloat(_y)); // GETS THE KEY OF THE PLAYER ANV MOVE
+void mousePressed() {
+  if (DEBUG) {
+    itemHandler.spawnRolls(10);
+    itemHandler.spawGerms(10);
   }
 }
 
@@ -117,7 +74,7 @@ void movePlayer(int _id, String _x, String _y) {
 void rebaseClientArray(String _state) {
   if (_state.equals("READY")) {
     println("Node.js server", _state, "-> Clearing players ArrayList!");
-    players.clear();
+    playerHandler.players.clear();
   }
 }
 
@@ -125,6 +82,7 @@ void oscEvent(OscMessage oscMessage) {
   //println("Type: " + oscMessage.typetag(), "Message: " + oscMessage);
 }
 
+// HANDLES INITIAL
 void sendSketchState() {
   OscMessage myMessage = new OscMessage("/sketch");
 
@@ -134,19 +92,16 @@ void sendSketchState() {
 
 // DEBUG UI
 void debugUI() {
-  fill(255);
-  
-  // Local player roll count
-  textAlign(LEFT, BOTTOM);
-  textSize(20);
-  text("Rolls: " + players.get(127).rollCount(), 5, height-30);
-  
-  // Num clients
-  textAlign(LEFT, BOTTOM);
-  textSize(20);
-  text("Clients: " + players, 5, height-5);
-  
-  //FrameRate
-  textAlign(LEFT, TOP);
-  text((int) frameRate, 0, 0);
+  if (DEBUG) {
+    fill(255);
+
+    // Num clients
+    textAlign(LEFT, BOTTOM);
+    textSize(20);
+    text(playerHandler.players.size() + " clients: " + playerHandler.players.values(), 5, height-5);
+
+    //FrameRate
+    textAlign(LEFT, TOP);
+    text((int) frameRate, 0, 0);
+  }
 }

@@ -9,6 +9,7 @@ class Player {
   private color pColor = color( random(0, 360), 100, random(75, 100)); // GENERATES RANDOM COLOR FOR USER
 
   private ArrayList<ToiletRoll> rolls = new ArrayList<ToiletRoll>();
+  private ArrayList<Germ> germs = new ArrayList<Germ>();
 
 
   // CHANGE PARAMS ORDER TO MATCH CONSTRUCTOR
@@ -34,6 +35,8 @@ class Player {
     circle(0, 0, this.size);
     popStyle();
     popMatrix();
+
+    if (DEBUG) displayPlayerInfo();
   }
 
   void move(float _x, float _y) {
@@ -53,7 +56,7 @@ class Player {
     this.vel.add(this.acc);
     this.pos.add(this.vel);
     this.vel.limit(2);
-    
+
     if (this.acc.equals(reference)) {
       this.vel.set(0, 0);
     }
@@ -61,35 +64,13 @@ class Player {
     this.pos.x = constrain(this.pos.x, (this.size/2), width-(this.size/2)); 
     this.pos.y = constrain(this.pos.y, (this.size/2), height-(this.size/2));
   }
-
-  public void update() {
-    Iterator<ToiletRoll> gameRollIter = gameRolls.iterator();
-
-    while (gameRollIter.hasNext()) {
-      ToiletRoll thisRoll = gameRollIter.next();
-
-      if (this.pos.dist(thisRoll.loc) < this.size / 2 + thisRoll.size / 2) { // SET PICKUP RADIUS AND DISPLAY THE ACTUAL RADIUS WITH A FUNCTION?
-        rolls.add(thisRoll);
-        gameRollIter.remove();
-      }
-    }
-  }
-
-  //  // IF THE UID EQUALS THE CURENT ITERATION, REMOVE IT AND PRINT TO CONSOLE
-  //  //if (collected_.getClass() == ToiletRoll.class) {
-  //  //  int rollIndex = gameRolls.indexOf(collected_);
-  //  //  ToiletRoll toTransfer = gameRolls.get(rollIndex);
-  //  //  iterator.remove(thisRoll);
-  //  //  rolls.add(toTransfer);
-  //  //}
-  //  if (thisRoll.equals(collected_)) {
-  //    gameRollIter.remove();
-  //    rolls.add(new ToiletRoll(new PVector(0.0,0.0),0));
-  //  }
-
-
+  
   public int rollCount() {
     return this.rolls.size();
+  }
+  
+  public int germCount() {
+    return this.germs.size();
   }
 
   // PLAYER METHODS
@@ -101,18 +82,11 @@ class Player {
     return this.UID;
   }
 
-  public float[] getPosArray() {
-    //float[] position = {this.playerPos.x, this.playerPos.y};
-    return this.pos.array();
-  }
-  
   public PVector getPos() {
     return this.pos;
   }
 
   public void setPosition(float _x, float _y) {
-    //this.playerX = _x;
-    //this.playerY = _y;
     this.pos.set(_x, _y);
   }
 
@@ -123,13 +97,29 @@ class Player {
   public void setColor(color _newColor) {
     this.pColor = _newColor;
   }
-  
-  public void displayID(){
+
+  public void displayUID() {
     pushMatrix();
     translate(this.pos.x, this.pos.y);
     fill(0);
     textAlign(CENTER, BOTTOM);
     text(str(getUID()), 0, -this.size/2);
+    popMatrix();
+  }
+  
+  void displayPlayerInfo(){
+    pushMatrix();
+    pushStyle();
+    translate(this.pos.x, this.pos.y);
+    fill(0);
+    textSize(15);
+    textAlign(CENTER, BOTTOM);
+    text("UID: " + getUID(), 0, -this.size / 2);
+    textAlign(CENTER, TOP);
+    String items = "\nRolls: " + rollCount() + 
+                   "\nGerms: " + germCount();
+    text(items,  0, this.size / 4);
+    popStyle();
     popMatrix();
   }
 }
