@@ -1,56 +1,58 @@
 var socket = io();
-var joyStickInterval;
-var intervalTime = 1; //ms
+var angle;
+var force;
 
-console.log("touchscreen is", VirtualJoystick.touchScreenAvailable() ? "available" : "not available");
-
-// CREATES NEW JOYSTICK ON SCREEN
-var joystick = new VirtualJoystick({
-  container: document.getElementById('stickContainer'),
-  mouseSupport: true,
-  stationaryBase: true,
-  baseX: 200,
-  baseY: 200,
-  limitStickTravel: true,
-  stickRadius: 50
+var manager = nipplejs.create({
+  zone: document.getElementById('zone_joystick'),
+  color: 'red',
+  mode: 'static',
+  position: { left: '25%', top: '50%' },
+  restJoystick: true,
+  threshold: 1,
+  size: 200
 });
 
-function compare(arr1, arr2) {
+function notSame(arr1, arr2) {
   for (let i = 0; i < arr1.length; i++) {
     if (arr1[i] !== arr2[i]) {
-      return false
-    } else {
       return true
+    } else {
+      return false
     }
   }
 }
 
-// WHEN USER MOVES START SENDING THE POSITION
-joystick.addEventListener('touchStart', function () {
-  console.log('DOWN');
+function limit(num) {
+  if (num <= 100) {
+    return parseInt(num);
+  } else {
+    return 100;
+  }
+}
 
-  // STORES PREVIOUS POSITION
-  var last = [];
-  joyStickInterval = setInterval(() => {
-    var pos = [(joystick.deltaX() / 50).toFixed(2), (joystick.deltaY() / 50).toFixed(2)];
 
-    // SENDS OSC MESSAGE IF THE POSITION HAS CHANGED
-    if (compare(pos, last) == false) {
-      sendosc('joystick', pos)
-      last = pos.slice(0);
+
+manager.on('start', (evt, nipple) => {
+  console.log("STARTED");
+  var lastAngleForce = []; // STORE LAST VALUES
+  nipple.on('move', (evt, data) => {
+    angle = parseInt(data.angle.degree); 
+    force = limit(data.force * 100);
+    let angleForce = [angle, force];
+    // console.log(angle, force);
+
+    // COMPARES NEW VALUES TO LAST VALUES AND SENDS IF DIFFERENT
+    // ##### MAYBE GET MORE INCREMENT OF DEGREE ??? ####
+    if (notSame(angleForce, lastAngleForce)) {
+      sendosc('joystick', angleForce);
+      lastAngleForce = angleForce.slice(0);
     }
-  }, intervalTime);
-});
-
-// WHEN USER LETS GO OF THE JOYSTICK WAIT AND STOP SENDING THE POSITION
-joystick.addEventListener('touchEnd', function () {
-  console.log("UP");
-  // sendosc('joystick', [Number(Math.abs(joystick.deltaX().toFixed(2))-Math.abs(joystick.deltaX()).toFixed(2)), Number(Math.abs(joystick.deltaY().toFixed(2))-Math.abs(joystick.deltaY()).toFixed(2))]);
-  // sendosc('joystick', ["0.00", "0.00"]);
-  setTimeout(function(){
-    clearInterval(joyStickInterval);
-   }, intervalTime);
-  
+  });
+}).on('end', function (evt, nipple) {
+  // console.log(nipple);
+  sendosc('joystick', [angle, force-force]);
+  nipple.off('move');
+  console.log("ENDED");
 });
 
 // SENDS OSC TO SERVER
