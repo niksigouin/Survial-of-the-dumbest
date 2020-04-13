@@ -6,7 +6,7 @@ console.log("touchscreen is", VirtualJoystick.touchScreenAvailable() ? "availabl
 
 // CREATES NEW JOYSTICK ON SCREEN
 var joystick = new VirtualJoystick({
-  container: document.getElementById('container'),
+  container: document.getElementById('stickContainer'),
   mouseSupport: true,
   stationaryBase: true,
   baseX: 200,
@@ -15,21 +15,42 @@ var joystick = new VirtualJoystick({
   stickRadius: 50
 });
 
+function compare(arr1, arr2) {
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false
+    } else {
+      return true
+    }
+  }
+}
+
 // WHEN USER MOVES START SENDING THE POSITION
 joystick.addEventListener('touchStart', function () {
-  // console.log('down');
+  console.log('DOWN');
 
+  // STORES PREVIOUS POSITION
+  var last = [];
   joyStickInterval = setInterval(() => {
-    sendosc('joystick', [(joystick.deltaX()/50).toFixed(2),(joystick.deltaY()/50).toFixed(2)]);
+    var pos = [(joystick.deltaX() / 50).toFixed(2), (joystick.deltaY() / 50).toFixed(2)];
+
+    // SENDS OSC MESSAGE IF THE POSITION HAS CHANGED
+    if (compare(pos, last) == false) {
+      sendosc('joystick', pos)
+      last = pos.slice(0);
+    }
   }, intervalTime);
 });
 
 // WHEN USER LETS GO OF THE JOYSTICK WAIT AND STOP SENDING THE POSITION
 joystick.addEventListener('touchEnd', function () {
+  console.log("UP");
   // sendosc('joystick', [Number(Math.abs(joystick.deltaX().toFixed(2))-Math.abs(joystick.deltaX()).toFixed(2)), Number(Math.abs(joystick.deltaY().toFixed(2))-Math.abs(joystick.deltaY()).toFixed(2))]);
-  sendosc('joystick', ["0.00", "0.00"]);
-
-  clearInterval(joyStickInterval);
+  // sendosc('joystick', ["0.00", "0.00"]);
+  setTimeout(function(){
+    clearInterval(joyStickInterval);
+   }, intervalTime);
+  
 });
 
 // SENDS OSC TO SERVER
