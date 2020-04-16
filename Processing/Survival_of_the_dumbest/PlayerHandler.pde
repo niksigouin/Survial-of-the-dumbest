@@ -22,10 +22,10 @@ class PlayerHandler {
     while (playerIter.hasNext()) { // && playerIter.hasNext()
       Player thisPlayer = playerIter.next();
       thisPlayer.display();
-      
-      if (DEBUG) {
-        players.get(127).setPosition(mouseX, mouseY);
-      }
+      thisPlayer.updatePosition();
+      //if (DEBUG) {
+      //  players.get(127).setPosition(mouseX, mouseY);
+      //}
     }
   }
 

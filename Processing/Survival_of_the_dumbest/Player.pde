@@ -38,31 +38,36 @@ class Player {
 
     if (DEBUG) displayPlayerInfo();
   }
-
-  void move(float _x, float _y) {
-    PVector reference = new PVector(0, 0);
-    //this.velocity.set(map(_x, -50, 50, -this.speed, this.speed), map(_y, -50, 50, -this.speed, this.speed));
-    //println(_x, _y);
-    //PVector joystick = new PVector(_x, _y);
-    //println(_x, _y, joystick);
-    //joystick.normalize();
-    //println(joystick);
-
-    //this.acceleration = joystick;
-    //this.acceleration.set(_x, _y);
-    this.acc.set(_x, _y);
-    this.acc.limit(2);
-    this.acc.div(5);
-    this.vel.add(this.acc);
-    this.pos.add(this.vel);
-    this.vel.limit(2);
-
-    if (this.acc.equals(reference)) {
-      this.vel.set(0, 0);
-    }
+  
+  void updatePosition() {
+    //this.vel.add(this.acc);
+    this.pos.add(this.acc);
+    this.vel.limit(1);
 
     this.pos.x = constrain(this.pos.x, (this.size/2), width-(this.size/2)); 
     this.pos.y = constrain(this.pos.y, (this.size/2), height-(this.size/2));
+  }
+
+  void move(float _x, float _y) {
+    //PVector reference = new PVector(0, 0);
+    //this.velocity.set(map(_x, -50, 50, -this.speed, this.speed), map(_y, -50, 50, -this.speed, this.speed));
+    //println(_x, _y);
+    this.acc = new PVector(_x, _y);
+    this.acc.mult(3);
+    //input.sub(this.pos);
+    
+    
+    println(this.acc, this.vel);
+    //println(_x, _y, joystick);
+    //this.acc.normalize();
+    
+
+    //this.acc = joystick;
+    //this.acceleration.set(_x, _y);
+    //this.acc.set(_x, _y);
+    //this.acc.limit(2);
+    //this.acc.div(5);
+    
   }
   
   public int rollCount() {

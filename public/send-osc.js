@@ -1,6 +1,6 @@
 var socket = io();
-var angle;
-var force;
+var x;
+var y;
 
 var manager = nipplejs.create({
   zone: document.getElementById('zone_joystick'),
@@ -34,23 +34,28 @@ function limit(num) {
 
 manager.on('start', (evt, nipple) => {
   console.log("STARTED");
-  var lastAngleForce = []; // STORE LAST VALUES
+  var lastDir = []; // STORE LAST VALUES
   nipple.on('move', (evt, data) => {
-    angle = parseInt(data.angle.degree); 
-    force = limit(data.force * 100);
-    let angleForce = [angle, force];
+    // angle = parseInt(data.angle.degree); 
+    // force = limit(data.force * 100);
+    // let angleForce = [angle, force];
     // console.log(angle, force);
+
+    x = (data.vector.x);
+    y = -(data.vector.y);
+
+    let dir = [x.toFixed(2), y.toFixed(2)];
 
     // COMPARES NEW VALUES TO LAST VALUES AND SENDS IF DIFFERENT
     // ##### MAYBE GET MORE INCREMENT OF DEGREE ??? ####
-    if (notSame(angleForce, lastAngleForce)) {
-      sendosc('joystick', angleForce);
-      lastAngleForce = angleForce.slice(0);
+    if (notSame(dir, lastDir)) {
+      sendosc('joystick', dir);
+      lastDir = dir.slice(0);
     }
   });
 }).on('end', function (evt, nipple) {
   // console.log(nipple);
-  sendosc('joystick', [angle, force-force]);
+  sendosc('joystick', ["0.0", "0.0"]);
   nipple.off('move');
   console.log("ENDED");
 });

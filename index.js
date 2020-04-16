@@ -36,7 +36,7 @@ io.on('connection', function (socket) {
     socket.on('userInput', function (type, val) {
         // Ships the Message over OSC
         client.send("/" + type, user, val);
-        console.log("/" + type, user, val);
+        // console.log("/" + type, user, val);
     });
 
     // Disconnects player when the leave the web page

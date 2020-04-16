@@ -79,7 +79,7 @@ void rebaseClientArray(String _state) {
 }
 
 void oscEvent(OscMessage oscMessage) {
-  //println("Type: " + oscMessage.typetag(), "Message: " + oscMessage);
+  println("Type: " + oscMessage.typetag(), "Message: " + oscMessage);
 }
 
 // HANDLES INITIAL
