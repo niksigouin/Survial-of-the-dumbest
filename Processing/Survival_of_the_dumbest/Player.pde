@@ -5,7 +5,8 @@ class Player {
   private PVector acc; // Player velocity
   private float mass;
   private float size; // Player size vars.
-  private PVector dirForce;
+  private PVector dirForce; // Player directional force [x, y]
+  private float rot;
   //private final float DEFAULT_SPEED = 1.0;
   //private float speed = DEFAULT_SPEED;
   private color pColor = color( random(0, 360), 100, random(75, 100)); // GENERATES RANDOM COLOR FOR USER
@@ -21,7 +22,7 @@ class Player {
     this.vel = new PVector(0, 0);
     this.acc = new PVector(0, 0);
     this.size = _size;
-    this.mass = random(1, 2);
+    this.mass = 1;
     this.dirForce = new PVector(0, 0);
   }
 
@@ -33,10 +34,14 @@ class Player {
     //ellipseMode(RADIUS);
     colorMode(HSB, 360, 100, 100);
     translate(this.loc.x, this.loc.y);
+    rotate(this.rot + radians(90)); // SETS CORRECT ORIENTATION 
     fill(this.pColor);
     stroke(0);
     strokeWeight(this.size * 0.05);
     circle(0, 0, this.size);
+    fill(255);
+    noStroke();
+    rect((-this.size * 0.2) / 2, -this.size/2, this.size * 0.2, this.size * 0.4);
     popStyle();
     popMatrix();
 
@@ -73,6 +78,7 @@ class Player {
     force.normalize();
     force.mult(0.5);  // TAKE MASS INTO ACCOUNT?? MORE TP = MORE MASS THUS HARDER TIME NAVIGATING
     this.dirForce = force; 
+    this.rot = this.dirForce.heading();
   }
 
   public int rollCount() {
