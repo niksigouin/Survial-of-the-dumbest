@@ -1,6 +1,6 @@
 {
     "name": "sotd-server",
-    "version": "0.0.1",
+    "version": "0.1.2",
     "description": "Final project for EDM4600 in interactive media. Multiplayer game using Node.js & Processing",
     "main": "index.js",
     "bin": "index.js",
