@@ -1,36 +1,75 @@
 var socket = io();
-var joyStickInterval;
-var intervalTime = 1; //ms
+var x;
+var y;
 
-console.log("touchscreen is", VirtualJoystick.touchScreenAvailable() ? "available" : "not available");
+var germ = document.getElementById('zone_button');
 
-// CREATES NEW JOYSTICK ON SCREEN
-var joystick = new VirtualJoystick({
-  container: document.getElementById('container'),
-  mouseSupport: true,
-  stationaryBase: true,
-  baseX: 200,
-  baseY: 200,
-  limitStickTravel: true,
-  stickRadius: 50
+var manager = nipplejs.create({
+  zone: document.getElementById('zone_joystick'),
+  color: 'red',
+  mode: 'static',
+  position: { left: '25%', top: '50%' },
+  restJoystick: true,
+  threshold: 1,
+  size: 200
 });
 
-// WHEN USER MOVES START SENDING THE POSITION
-joystick.addEventListener('touchStart', function () {
-  // console.log('down');
+function notSame(arr1, arr2) {
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return true
+    } else {
+      return false
+    }
+  }
+}
 
-  joyStickInterval = setInterval(() => {
-    sendosc('joystick', [(joystick.deltaX()/50).toFixed(2),(joystick.deltaY()/50).toFixed(2)]);
-  }, intervalTime);
+function limit(num) {
+  if (num <= 100) {
+    return parseInt(num);
+  } else {
+    return 100;
+  }
+}
+
+
+
+manager.on('start', (evt, nipple) => {
+  console.log("STARTED");
+  var lastDir = []; // STORE LAST VALUES
+  nipple.on('move', (evt, data) => {
+
+    x = (data.vector.x);
+    y = -(data.vector.y);
+
+    let dir = [x.toFixed(2), y.toFixed(2)];
+
+    // COMPARES NEW VALUES TO LAST VALUES AND SENDS IF DIFFERENT
+    if (notSame(dir, lastDir)) {
+      sendosc('joystick', dir);
+      lastDir = dir.slice(0);
+    }
+  });
+}).on('end', function (evt, nipple) {
+  // console.log(nipple);
+  sendosc('joystick', ["0.0", "0.0"]);
+  nipple.off('move');
+  console.log("ENDED");
 });
 
-// WHEN USER LETS GO OF THE JOYSTICK WAIT AND STOP SENDING THE POSITION
-joystick.addEventListener('touchEnd', function () {
-  // sendosc('joystick', [Number(Math.abs(joystick.deltaX().toFixed(2))-Math.abs(joystick.deltaX()).toFixed(2)), Number(Math.abs(joystick.deltaY().toFixed(2))-Math.abs(joystick.deltaY()).toFixed(2))]);
-  sendosc('joystick', ["0.00", "0.00"]);
+germ.addEventListener('touchstart', function(ev) {
+  sendosc('btn1', 1);
+  // setTimeout(() => {
+  //   sendosc('btn1', 0);
+  // }, 1/60 * 1000);
+}, false);
 
-  clearInterval(joyStickInterval);
-});
+// germ.ontouchstart(() => {
+//   console.log("FUCK");
+// });
+// germ.on('click touchstart', function (evt) {
+//   console.log("OUCH!");
+// });
 
 // SENDS OSC TO SERVER
 // [TYPE: WHAT CONTROL, VAL: VALUE OF CONTROL]

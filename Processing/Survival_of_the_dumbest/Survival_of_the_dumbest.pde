@@ -41,7 +41,7 @@ void setup() {
   itemHandler.spawGerms(numGerms);
 
   if (DEBUG) {
-    playerHandler.createLocalPlayer();
+    //playerHandler.createLocalPlayer();
   }
 
   // SENDS A MESSAGE TO THE NODE.JS SERVER TO GRAB CONNECTED CLIENTS

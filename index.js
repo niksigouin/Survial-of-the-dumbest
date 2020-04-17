@@ -4,7 +4,6 @@ var http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const internalIp = require('internal-ip');
 const { Client, Server } = require('node-osc');
-// var { Client, Server } from 'node-osc';
 
 const HTTP_PORT = 8080;
 const EMIT_PORT = 3334;
@@ -37,6 +36,7 @@ io.on('connection', function (socket) {
     socket.on('userInput', function (type, val) {
         // Ships the Message over OSC
         client.send("/" + type, user, val);
+        console.log("/" + type, user, val);
     });
 
     // Disconnects player when the leave the web page

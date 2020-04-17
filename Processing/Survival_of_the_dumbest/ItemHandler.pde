@@ -22,8 +22,9 @@ class ItemHandler {
       // MANIPULATES THE ToiletRolls
       while (gameRollIter.hasNext()) {
         ToiletRoll thisRoll = gameRollIter.next();
-
-        if (thisPlayer.pos.dist(thisRoll.loc) < thisPlayer.size / 2 + thisRoll.size / 2) { // SET PICKUP RADIUS AND DISPLAY THE ACTUAL RADIUS WITH A FUNCTION?
+        
+        // IF IN CONTACT WITH ROLL, COLLECT ROLL AND REMOVE IT FROM THE WORLD
+        if (thisPlayer.loc.dist(thisRoll.loc) < thisPlayer.size / 2 + thisRoll.size / 2) { // SET PICKUP RADIUS AND DISPLAY THE ACTUAL RADIUS WITH A FUNCTION?
           thisPlayer.rolls.add(thisRoll);
           gameRollIter.remove();
         }
@@ -33,7 +34,7 @@ class ItemHandler {
       while (gameGermIter.hasNext()) {
         Germ thisGerm = gameGermIter.next();
 
-        if (thisPlayer.pos.dist(thisGerm.loc) < thisPlayer.size / 2 + thisGerm.size / 2) { // SET PICKUP RADIUS AND DISPLAY THE ACTUAL RADIUS WITH A FUNCTION?
+        if (thisPlayer.loc.dist(thisGerm.loc) < thisPlayer.size / 2 + thisGerm.size / 2) { // SET PICKUP RADIUS AND DISPLAY THE ACTUAL RADIUS WITH A FUNCTION?
           thisPlayer.germs.add(thisGerm);
           gameGermIter.remove();
         }
