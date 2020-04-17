@@ -1,22 +1,26 @@
 # Survial-of-the-dumbdest
 
-Template application fro sending OSC witha mobile phone
-
-## Installation
-
-Use the package manager [node.js](https://nodejs.org/en/) to install.
+Node.js and Processing multiplayer game
 
 ## Usage
 
-Move to root folder and run the following command
+Move to /bin folder and run the executable to start the server
 
-```javascript
-npm install
-node index.js
+```batch
+bin/sotd-server-linux
+bin/sotd-server-win.exe
 ```
 
-Open a browser page and go to the displayed IP printed in the terminal
+Move to /processing/export folder and run the executable to start
 
+```batch
+processing/export/linux64
+processing/export/windows64
+```
+
+On your mobile phones, connect to the IP displayed on the server terminal
+
+Example:
 ```batch
 Connect to:  192.168.1.107:8080
 ```
