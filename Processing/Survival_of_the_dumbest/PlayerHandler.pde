@@ -22,7 +22,8 @@ class PlayerHandler {
     while (playerIter.hasNext()) { // && playerIter.hasNext()
       Player thisPlayer = playerIter.next();
       thisPlayer.display();
-      thisPlayer.updatePosition();
+      thisPlayer.update();
+      
       //if (DEBUG) {
       //  players.get(127).setPosition(mouseX, mouseY);
       //}
@@ -59,9 +60,13 @@ class PlayerHandler {
   // HANDLES PLAYER MOVEMENTS
   void movePlayer(int _id, String _x, String _y) {
     Integer _UID = new Integer(_id); // CONVERTS INT TO PRIMITIVE INTERGER
-
+    PVector force = new PVector(Float.parseFloat(_x), Float.parseFloat(_y));
+    
     if (players.containsKey(_UID)) {
-      players.get(_UID).move(Float.parseFloat(_x), Float.parseFloat(_y)); // GETS THE KEY OF THE PLAYER ANV MOVE
+      players.get(_UID).setDirForce(force); // GETS THE KEY OF THE PLAYER ANV MOVE
+      //if(force.equals(new PVector(0,0))){
+      //  players.get(_UID).applyFriction();
+      //}
     }
   }
 }
