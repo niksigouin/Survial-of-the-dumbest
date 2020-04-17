@@ -18,15 +18,27 @@ class PlayerHandler {
 
   public void update() {
     Iterator<Player> playerIter = players.values().iterator();
+    //Iterator<Player> otherPlayerIter = players.values().iterator();
 
-
+    
     while (playerIter.hasNext()) { // && playerIter.hasNext()
       Player thisPlayer = playerIter.next();
       thisPlayer.display();
       thisPlayer.update();
-
+      
       //if (DEBUG) {
       //  players.get(127).setPosition(mouseX, mouseY);
+      //}
+
+      // CHECKS FOR ATT ON OTHER PLAYER
+      //while(otherPlayerIter.hasNext()){
+      //   Player otherPlayer = otherPlayerIter.next();
+      //   if (thisPlayer.loc.dist(otherPlayer.loc) < thisPlayer.attRange / 2 + otherPlayer.attRange / 2 && thisPlayer.hasGerm()) { // SET PICKUP RADIUS AND DISPLAY THE ACTUAL RADIUS WITH A FUNCTION?
+
+      //    thisPlayer.useGerm(); // REMOVE LAST GERM COLLECTED
+      //    otherPlayer.setColor(#FF0000);
+
+      //  }
       //}
     }
   }
@@ -71,8 +83,8 @@ class PlayerHandler {
   //HANDLES PLAYER ATTACK
   void attack(int _id, int state_) {
     Integer _UID = new Integer(_id); // CONVERTS INT TO PRIMITIVE INTERGER
-    
-     if (players.containsKey(_UID)) {
+
+    if (players.containsKey(_UID)) {
       players.get(_UID).attack(); // GETS THE KEY OF THE PLAYER ANV MOVE
     }
   }

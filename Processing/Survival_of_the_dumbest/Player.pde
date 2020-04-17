@@ -7,10 +7,9 @@ class Player {
   private float size; // Player size vars.
   private PVector dirForce; // Player directional force [x, y]
   private float rot;
-  //private final float DEFAULT_SPEED = 1.0;
-  //private float speed = DEFAULT_SPEED;
-  private color pColor = color( random(0, 360), 100, random(75, 100)); // GENERATES RANDOM COLOR FOR USER
-
+  private float attRange;
+  private color initColor = color( random(0, 360), 100, random(75, 100)); // GENERATES RANDOM COLOR FOR USER
+  private color pColor;
   private ArrayList<ToiletRoll> rolls = new ArrayList<ToiletRoll>();
   private ArrayList<Germ> germs = new ArrayList<Germ>();
 
@@ -24,11 +23,18 @@ class Player {
     this.size = _size;
     this.mass = 1;
     this.dirForce = new PVector(0, 0);
+    this.attRange = this.size * 2.5;
+    this.pColor = this.initColor;
   }
 
   // DISPLAYS PLAYER
   // Change player to new game
   void display() {
+    if (DEBUG) {
+      displayAttRad();
+      displayPlayerInfo();
+    }
+
     pushMatrix();
     pushStyle();
     //ellipseMode(RADIUS);
@@ -44,8 +50,6 @@ class Player {
     rect((-this.size * 0.2) / 2, -this.size/2, this.size * 0.2, this.size * 0.4);
     popStyle();
     popMatrix();
-
-    if (DEBUG) displayPlayerInfo();
   }
 
   // APPLYS FRICTION TO THE PLAYER
@@ -81,9 +85,38 @@ class Player {
     this.rot = this.dirForce.heading();
   }
 
+  void displayAttRad() {
+    pushMatrix();
+    pushStyle();
+    translate(this.loc.x, this.loc.y);
+    noStroke();
+    fill(#00AA00, 58);
+    circle(0, 0, this.attRange);
+    popStyle();
+    popMatrix();
+  }
+
   // HANDLES THE PLAYER ATTACK
-  void attack() {
-    println(this.toString(), "attacked!");
+  public void attack() {
+    //Iterator<Player> playerIter = playerHandler.players.values().iterator();
+    //Iterator<Player> otherPlayerIter = playerHandler.players.values().iterator();
+
+
+    // CHECKS IF PLAYER HAS GERM AND IN CONTACT WITH OTHER
+    if (this.hasGerm()) {
+      println(this, "attacked!");
+      //  for (Player otherPlayer : playerHandler.players.values()) {
+      //    if (this.loc.dist(otherPlayer.loc) < 50) { // SET PICKUP RADIUS AND DISPLAY THE ACTUAL RADIUS WITH A FUNCTION?
+      //      println(this, "attacked:", otherPlayer);
+      //      this.useGerm(); // REMOVE LAST GERM COLLECTED
+      //      otherPlayer.setColor(#FFFFFF);
+      //    } else {
+      //println(this, "tried to attack but has new germs!");
+      //    }
+      //  }
+    } else {
+      println(this, "tried to attack but has new germs!");
+    }
   }
 
   public int rollCount() {
@@ -103,8 +136,12 @@ class Player {
     return this.UID;
   }
 
-  public PVector getPos() {
+  public PVector getLoc() {
     return this.loc;
+  }
+
+  public float getAttackRange() {
+    return this.attRange;
   }
 
   public void setPosition(float _x, float _y) {
@@ -119,6 +156,22 @@ class Player {
     this.pColor = _newColor;
   }
 
+  public void setInitColor() {
+    this.pColor = this.initColor;
+  }
+
+  public void useGerm() {
+    this.germs.remove( this.germs.size() -1);
+  }
+
+  public boolean hasGerm() {
+    return (this.germs.size() > 0);
+  }
+
+  public float getSize() {
+    return this.size;
+  }
+
   // USER ID
   public void displayUID() {
     pushMatrix();
@@ -128,7 +181,7 @@ class Player {
     text(str(getUID()), 0, -this.size/2);
     popMatrix();
   }
-  
+
   // USER INFO
   void displayPlayerInfo() {
     pushMatrix();
