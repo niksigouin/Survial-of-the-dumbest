@@ -2,6 +2,8 @@ var socket = io();
 var x;
 var y;
 
+var germ = document.getElementById('zone_button');
+
 var manager = nipplejs.create({
   zone: document.getElementById('zone_joystick'),
   color: 'red',
@@ -36,10 +38,6 @@ manager.on('start', (evt, nipple) => {
   console.log("STARTED");
   var lastDir = []; // STORE LAST VALUES
   nipple.on('move', (evt, data) => {
-    // angle = parseInt(data.angle.degree); 
-    // force = limit(data.force * 100);
-    // let angleForce = [angle, force];
-    // console.log(angle, force);
 
     x = (data.vector.x);
     y = -(data.vector.y);
@@ -47,7 +45,6 @@ manager.on('start', (evt, nipple) => {
     let dir = [x.toFixed(2), y.toFixed(2)];
 
     // COMPARES NEW VALUES TO LAST VALUES AND SENDS IF DIFFERENT
-    // ##### MAYBE GET MORE INCREMENT OF DEGREE ??? ####
     if (notSame(dir, lastDir)) {
       sendosc('joystick', dir);
       lastDir = dir.slice(0);
@@ -59,6 +56,20 @@ manager.on('start', (evt, nipple) => {
   nipple.off('move');
   console.log("ENDED");
 });
+
+germ.addEventListener('touchstart', function(ev) {
+  sendosc('btn1', 1);
+  // setTimeout(() => {
+  //   sendosc('btn1', 0);
+  // }, 1/60 * 1000);
+}, false);
+
+// germ.ontouchstart(() => {
+//   console.log("FUCK");
+// });
+// germ.on('click touchstart', function (evt) {
+//   console.log("OUCH!");
+// });
 
 // SENDS OSC TO SERVER
 // [TYPE: WHAT CONTROL, VAL: VALUE OF CONTROL]

@@ -13,6 +13,7 @@ class PlayerHandler {
     oscP5.plug(this, "connectClient", "/connect");
     oscP5.plug(this, "disconnectClient", "/disconnect");
     oscP5.plug(this, "movePlayer", "/joystick");
+    oscP5.plug(this, "attack", "/btn1");
   }
 
   public void update() {
@@ -23,7 +24,7 @@ class PlayerHandler {
       Player thisPlayer = playerIter.next();
       thisPlayer.display();
       thisPlayer.update();
-      
+
       //if (DEBUG) {
       //  players.get(127).setPosition(mouseX, mouseY);
       //}
@@ -61,12 +62,18 @@ class PlayerHandler {
   void movePlayer(int _id, String _x, String _y) {
     Integer _UID = new Integer(_id); // CONVERTS INT TO PRIMITIVE INTERGER
     PVector force = new PVector(Float.parseFloat(_x), Float.parseFloat(_y));
-    
+
     if (players.containsKey(_UID)) {
       players.get(_UID).setDirForce(force); // GETS THE KEY OF THE PLAYER ANV MOVE
-      //if(force.equals(new PVector(0,0))){
-      //  players.get(_UID).applyFriction();
-      //}
+    }
+  }
+
+  //HANDLES PLAYER ATTACK
+  void attack(int _id, int state_) {
+    Integer _UID = new Integer(_id); // CONVERTS INT TO PRIMITIVE INTERGER
+    
+     if (players.containsKey(_UID)) {
+      players.get(_UID).attack(); // GETS THE KEY OF THE PLAYER ANV MOVE
     }
   }
 }

@@ -47,7 +47,7 @@ class Player {
 
     if (DEBUG) displayPlayerInfo();
   }
-  
+
   // APPLYS FRICTION TO THE PLAYER
   void applyFriction() {
     PVector friction = this.vel.get();
@@ -62,7 +62,7 @@ class Player {
     this.vel.limit(5); // VELOCITY LIMIT
     this.loc.add(this.vel);
     this.acc.mult(0);
-    
+
     // WHEN PLAYER IS MOVING, APPLY THE FORCE
     if (!this.dirForce.equals(new PVector(0, 0))) {
       this.acc.set(this.dirForce);
@@ -79,6 +79,11 @@ class Player {
     force.mult(0.5);  // TAKE MASS INTO ACCOUNT?? MORE TP = MORE MASS THUS HARDER TIME NAVIGATING
     this.dirForce = force; 
     this.rot = this.dirForce.heading();
+  }
+
+  // HANDLES THE PLAYER ATTACK
+  void attack() {
+    println(this.toString(), "attacked!");
   }
 
   public int rollCount() {
@@ -114,6 +119,7 @@ class Player {
     this.pColor = _newColor;
   }
 
+  // USER ID
   public void displayUID() {
     pushMatrix();
     translate(this.loc.x, this.loc.y);
@@ -122,7 +128,8 @@ class Player {
     text(str(getUID()), 0, -this.size/2);
     popMatrix();
   }
-
+  
+  // USER INFO
   void displayPlayerInfo() {
     pushMatrix();
     pushStyle();
