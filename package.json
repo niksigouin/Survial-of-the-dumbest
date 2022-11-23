@@ -9,7 +9,7 @@
         "internal-ip": "^6.0.0",
         "nipplejs": "^0.8.5",
         "node-osc": "^4.1.8",
-        "socket.io": "^2.3.0"
+        "socket.io": "^2.5.0"
     },
     "pkg": {
         "assets": "public/**/*"
