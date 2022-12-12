@@ -5,7 +5,7 @@
     "main": "index.js",
     "bin": "index.js",
     "dependencies": {
-        "express": "^4.17.1",
+        "express": "^4.17.3",
         "internal-ip": "^6.0.0",
         "nipplejs": "^0.8.5",
         "node-osc": "^4.1.8",
